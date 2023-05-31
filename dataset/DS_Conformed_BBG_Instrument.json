@@ -1,0 +1,64 @@
+{
+	"name": "DS_Conformed_BBG_Instrument",
+	"properties": {
+		"annotations": [],
+		"type": "SqlPoolTable",
+		"schema": [
+			{
+				"name": "RUN_DATE",
+				"type": "date"
+			},
+			{
+				"name": "IDENTIFIER",
+				"type": "varchar"
+			},
+			{
+				"name": "PX_CLOSE_1D",
+				"type": "decimal",
+				"precision": 15,
+				"scale": 4
+			},
+			{
+				"name": "HIGH_52WEEK",
+				"type": "decimal",
+				"precision": 15,
+				"scale": 4
+			},
+			{
+				"name": "LOW_52WEEK",
+				"type": "decimal",
+				"precision": 15,
+				"scale": 4
+			},
+			{
+				"name": "PX_CLOSE_DT",
+				"type": "date"
+			},
+			{
+				"name": "LAST_UPDATE_DATE_EOD",
+				"type": "date"
+			},
+			{
+				"name": "PX_LAST_EOD",
+				"type": "decimal",
+				"precision": 15,
+				"scale": 4
+			},
+			{
+				"name": "EQY_INIT_PO_SH_PX",
+				"type": "decimal",
+				"precision": 15,
+				"scale": 4
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Ferti_BBG_Instruments"
+		},
+		"sqlPool": {
+			"referenceName": "synwsdb01",
+			"type": "SqlPoolReference"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

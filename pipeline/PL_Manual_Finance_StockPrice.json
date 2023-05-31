@@ -1,0 +1,823 @@
+{
+	"name": "PL_Manual_Finance_StockPrice",
+	"properties": {
+		"activities": [
+			{
+				"name": "CD_LZToRZ_Finance_Manual_StockHourly",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "spc_ExecutionLogEntry_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "LS_ADLSRawZone",
+							"type": "LinkedServiceReference"
+						},
+						"path": "ferti-dl-raw-dev/SynapseInternal"
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Company",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Company",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ValueDate",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ValueDate",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Stock Value",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Stock_Value",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_LandingZone_Finance_Manual_StockHourly",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_RawZone_Finance_Manual_StockHourly",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "CD_RZToCZ_Finance_Manual_StockHourly",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "CD_LZToRZ_Finance_Manual_StockHourly",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "SqlDWSink",
+						"allowCopyCommand": true
+					},
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "LS_ADLSRawZone",
+							"type": "LinkedServiceReference"
+						},
+						"path": "ferti-dl-raw-dev/SynapseInternal"
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Company",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Company",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ValueDate",
+									"type": "DateTime",
+									"format": ""
+								},
+								"sink": {
+									"name": "ValueDate",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "Stock_Value",
+									"type": "Double"
+								},
+								"sink": {
+									"name": "Stock_Value",
+									"type": "Decimal"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_RawZone_Finance_Manual_StockHourly",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_Conformed_Finance_Manual_StockHourly",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "CD_Archive_Finance_Manual_StockHourly",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "ExecuteLoadStockHourlySP",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Company",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Company",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ValueDate",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ValueDate",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Stock Value",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Stock_Value",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_LandingZone_Finance_Manual_StockHourly",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_LandingZone_Finance_Manual_Archive_StockHourly",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "ExecuteLoadStockHourlySP",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "CD_RZToCZ_Finance_Manual_StockHourly",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_LoadStockPrice]"
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_Start",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "ManualExtractsLoad",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Started",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": null,
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": null,
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "Finance",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_End",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "CD_Archive_Finance_Manual_StockHourly",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "ManualExtractsLoad",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Completed",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@convertToUtc(utcNow(),'UTC')",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": null,
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": null,
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "Finance",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_Error_SrcToRZ",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "CD_LZToRZ_Finance_Manual_StockHourly",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "ManualExtractsLoad",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Error",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": {
+								"value": "@activity('CD_LZToRZ_Finance_Manual_StockHourly').Error.errorCode",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": {
+								"value": "@activity('CD_LZToRZ_Finance_Manual_StockHourly').Error.message",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "Finance",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_Error_SrcToRZ_copy1",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "CD_RZToCZ_Finance_Manual_StockHourly",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "ManualExtractsLoad",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Error",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": {
+								"value": "@activity('CD_RZToCZ_Finance_Manual_StockHourly').Error.errorCode",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": {
+								"value": "@activity('CD_RZToCZ_Finance_Manual_StockHourly').Error.message",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "Finance",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_Error_SrcToRZ_copy1_copy1",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "ExecuteLoadStockHourlySP",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "ManualExtractsLoad",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Error",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": {
+								"value": "@activity('ExecuteLoadStockHourlySP').Error.errorCode",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": {
+								"value": "@activity('ExecuteLoadStockHourlySP').Error.message",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "Finance",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_Error_SrcToRZ_copy1_copy1_copy1",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "CD_Archive_Finance_Manual_StockHourly",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "ManualExtractsLoad",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Error",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": {
+								"value": "@activity('CD_Archive_Finance_Manual_StockHourly').Error.errorCode",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": {
+								"value": "@activity('CD_Archive_Finance_Manual_StockHourly').Error.message",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "Finance",
+							"type": "String"
+						}
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "Finance/Future"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-02-23T11:50:04Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

@@ -1,0 +1,49 @@
+{
+	"name": "DS_Src_RawZone_WeeklyFreeCashFlow",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSRawZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat(formatDateTime(utcNow(),'yyyy-MM-dd'),'/WeeklyFreeCashFlow.csv')",
+					"type": "Expression"
+				},
+				"folderPath": "Finance/ManualExtracts",
+				"fileSystem": "ferti-dl-raw-dev"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Year",
+				"type": "String"
+			},
+			{
+				"name": "Week",
+				"type": "String"
+			},
+			{
+				"name": "ValueType",
+				"type": "String"
+			},
+			{
+				"name": "FCF_CY",
+				"type": "String"
+			},
+			{
+				"name": "FCF_PY",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

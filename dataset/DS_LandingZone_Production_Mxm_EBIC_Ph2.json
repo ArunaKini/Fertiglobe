@@ -1,0 +1,30 @@
+{
+	"name": "DS_LandingZone_Production_Mxm_EBIC_Ph2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSRawZone",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"DS_SourceFolder": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet0",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().DS_SourceFolder",
+					"type": "Expression"
+				},
+				"fileSystem": "ferti-dl-landing-dev"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

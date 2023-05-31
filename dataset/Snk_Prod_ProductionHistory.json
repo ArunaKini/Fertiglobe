@@ -1,0 +1,126 @@
+{
+	"name": "Snk_Prod_ProductionHistory",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "KPIDate",
+				"type": "date"
+			},
+			{
+				"name": "Month",
+				"type": "varchar"
+			},
+			{
+				"name": "Year",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OpCo",
+				"type": "varchar"
+			},
+			{
+				"name": "Product",
+				"type": "varchar"
+			},
+			{
+				"name": "Plant",
+				"type": "varchar"
+			},
+			{
+				"name": "ValueType",
+				"type": "varchar"
+			},
+			{
+				"name": "Plan_Year",
+				"type": "varchar"
+			},
+			{
+				"name": "Production_MTPD",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "Prod_MPC",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "Prod_MTD",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "Budget_Monthly",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "Actual_Monthly_Budget",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "Energy_Efficiency",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "Downtime",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "Onstream_Efficiency",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "Capacity_Efficiency",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "Asset_Utilization",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "Continuous_Operating_Days",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "Onstream_Days",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Prod_Production_Summary_History"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

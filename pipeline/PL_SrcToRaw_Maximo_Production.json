@@ -1,0 +1,66 @@
+{
+	"name": "PL_SrcToRaw_Maximo_Production",
+	"properties": {
+		"activities": [
+			{
+				"name": "EP_MXM_EBICDaily",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_LZToRaw_MXM_Production_EBICDaily",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_MXM_EFCDaily",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_MXM_EBICDaily",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_LZToRaw_MXM_Production_EFCDaily",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_MXM_FertilDaily",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_MXM_EFCDaily",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_LZToRaw_MXM_Production_FertilDaily",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Production/SourceToRaw"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-02-23T12:10:21Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

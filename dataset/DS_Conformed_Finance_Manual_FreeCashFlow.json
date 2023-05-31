@@ -1,0 +1,32 @@
+{
+	"name": "DS_Conformed_Finance_Manual_FreeCashFlow",
+	"properties": {
+		"annotations": [],
+		"type": "SqlPoolTable",
+		"schema": [
+			{
+				"name": "Year",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Quarter",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Cash_Value",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Future_Free_Cash_Flow"
+		},
+		"sqlPool": {
+			"referenceName": "synwsdb01",
+			"type": "SqlPoolReference"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

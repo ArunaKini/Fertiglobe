@@ -1,0 +1,78 @@
+{
+	"name": "CapexBudget21",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Excel2",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSynapseAnalyticsTable2",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          OpCo as string,",
+				"          KPIDate as string,",
+				"          Month as string,",
+				"          Quarter as string,",
+				"          Half_Year as string,",
+				"          Year as string,",
+				"          ValueType as string,",
+				"          Capex as string,",
+				"          Plan_Year as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          OpCo as string,",
+				"          KPIDate as date,",
+				"          Month as string,",
+				"          Quarter as string,",
+				"          Half_Year as string,",
+				"          Year as integer,",
+				"          ValueType as string,",
+				"          CAPEX as decimal(38,0),",
+				"          Plan_Year as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          OpCo,",
+				"          KPIDate,",
+				"          Month,",
+				"          Quarter,",
+				"          Half_Year,",
+				"          Year,",
+				"          ValueType,",
+				"          CAPEX = Capex,",
+				"          Plan_Year",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

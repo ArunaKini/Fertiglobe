@@ -1,0 +1,66 @@
+{
+	"name": "DF_SrcToRZ_Manual_Finance_NetDebt",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_LandingZone_Finance_Manual_NetDebt",
+						"type": "DatasetReference"
+					},
+					"name": "RawSrcNetDebt",
+					"description": "Import data from DS_LandingZone_Finance_Manual_NetDebt"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_ADLSRawZone",
+						"type": "DatasetReference"
+					},
+					"name": "RawLoadingNetDebt"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          Year as integer,",
+				"          Quarter as integer,",
+				"          Month as string,",
+				"          Company as string,",
+				"          ValueType as string,",
+				"          Available_Cash as float '###.##',",
+				"          Net_Debt as float '###.##',",
+				"          Short_Term_Debt as float '###.##',",
+				"          Long_Term_Debt as float '###.##',",
+				"          Deferred_Costs as float '###.##'",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> RawSrcNetDebt",
+				"RawSrcNetDebt sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['NetDebtFlow.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          Year,",
+				"          Quarter,",
+				"          Month,",
+				"          Company,",
+				"          ValueType,",
+				"          Available_Cash,",
+				"          Net_Debt,",
+				"          Short_Term_Debt,",
+				"          Long_Term_Debt,",
+				"          Deferred_Costs",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> RawLoadingNetDebt"
+			]
+		}
+	}
+}

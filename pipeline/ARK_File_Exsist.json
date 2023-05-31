@@ -1,0 +1,451 @@
+{
+	"name": "ARK_File_Exsist",
+	"properties": {
+		"activities": [
+			{
+				"name": "Validation1",
+				"type": "Validation",
+				"dependsOn": [
+					{
+						"activity": "Start Validation Process",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_LandingZone_Production_Mxm_EBIC_Ph2",
+						"type": "DatasetReference",
+						"parameters": {
+							"DS_SourceFolder": "Production/Maximo/Fertil/2023-05-18"
+						}
+					},
+					"timeout": "0.00:00:10",
+					"sleep": 5
+				}
+			},
+			{
+				"name": "SQL pool stored procedure1",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Validation1",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[FERTIL_AUDIT_FRAMEWORK].[spc_FileValidationLog]",
+					"storedProcedureParameters": {
+						"DataCategory": {
+							"value": "Production",
+							"type": "String"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@convertToUtc(utcNow(),'UTC')",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"Error_Message": {
+							"value": {
+								"value": "@concat('EBIC File Not Arrived For ', formatDateTime(utcNow(),'yyyy-MM-DD'))",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"Master_Identifier": {
+							"value": "RWPRD007",
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"Src_Rec_Count": {
+							"value": null,
+							"type": "Int32"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"ValidationCheckStatus": {
+							"value": "Failed",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "Start Validation Process",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[FERTIL_AUDIT_FRAMEWORK].[spc_FileValidationLog]",
+					"storedProcedureParameters": {
+						"DataCategory": {
+							"value": "Production",
+							"type": "String"
+						},
+						"EndTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"Error_Message": {
+							"value": null,
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"Master_Identifier": {
+							"value": "RWPRD007",
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"Src_Rec_Count": {
+							"value": null,
+							"type": "Int32"
+						},
+						"StartTime": {
+							"value": {
+								"value": "@convertToUtc(utcNow(),'UTC')",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ValidationCheckStatus": {
+							"value": "Started",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "Get Metadata1",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "Validation1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_LandingZone_Production_Mxm_EBIC_Ph2",
+						"type": "DatasetReference",
+						"parameters": {
+							"DS_SourceFolder": "Production/Maximo/Fertil/2023-05-18"
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "Filter1",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Metadata1').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@endswith(item().name,'xlsx')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Filter1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Filter1').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Get Metadata2",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "DS_LandingZone_Production_Mxm_EBIC_File_Ph2",
+									"type": "DatasetReference",
+									"parameters": {
+										"FileName": {
+											"value": "@item().name",
+											"type": "Expression"
+										},
+										"DS_SourceFolder": "Production/Maximo/Fertil/2023-05-18"
+									}
+								},
+								"fieldList": [
+									"columnCount",
+									"size"
+								],
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Get Metadata2",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(activity('Get Metadata2').output.columnCount,231)",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "SQL pool stored procedure1_copy1",
+										"type": "SqlPoolStoredProcedure",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"sqlPool": {
+											"referenceName": "synwsdb01",
+											"type": "SqlPoolReference"
+										},
+										"typeProperties": {
+											"storedProcedureName": "[FERTIL_AUDIT_FRAMEWORK].[spc_FileValidationLog]",
+											"storedProcedureParameters": {
+												"DataCategory": {
+													"value": "Production",
+													"type": "String"
+												},
+												"EndTime": {
+													"value": {
+														"value": "@convertToUtc(utcNow(),'UTC')",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												},
+												"Error_Message": {
+													"value": "EFC File Arrived but No Records found",
+													"type": "String"
+												},
+												"ExecutionID": {
+													"value": {
+														"value": "@pipeline().RunId",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"Master_Identifier": {
+													"value": "RWPRD007",
+													"type": "String"
+												},
+												"PipelineName": {
+													"value": {
+														"value": "@pipeline().Pipeline",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"Src_Rec_Count": {
+													"value": "0",
+													"type": "Int32"
+												},
+												"StartTime": {
+													"value": null,
+													"type": "DateTime"
+												},
+												"ValidationCheckStatus": {
+													"value": "Failed",
+													"type": "String"
+												}
+											}
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "SQL pool stored procedure1_copy1_copy1",
+										"type": "SqlPoolStoredProcedure",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"sqlPool": {
+											"referenceName": "synwsdb01",
+											"type": "SqlPoolReference"
+										},
+										"typeProperties": {
+											"storedProcedureName": "[FERTIL_AUDIT_FRAMEWORK].[spc_FileValidationLog]",
+											"storedProcedureParameters": {
+												"DataCategory": {
+													"value": "Production",
+													"type": "String"
+												},
+												"EndTime": {
+													"value": {
+														"value": "@convertToUtc(utcNow(),'UTC')",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												},
+												"Error_Message": {
+													"value": null,
+													"type": "String"
+												},
+												"ExecutionID": {
+													"value": {
+														"value": "@pipeline().RunId",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"Master_Identifier": {
+													"value": "RWPRD007",
+													"type": "String"
+												},
+												"PipelineName": {
+													"value": {
+														"value": "@pipeline().Pipeline",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"Src_Rec_Count": {
+													"value": null,
+													"type": "Int32"
+												},
+												"StartTime": {
+													"type": "DateTime"
+												},
+												"ValidationCheckStatus": {
+													"value": "Completed",
+													"type": "String"
+												}
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2023-05-18T07:32:20Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

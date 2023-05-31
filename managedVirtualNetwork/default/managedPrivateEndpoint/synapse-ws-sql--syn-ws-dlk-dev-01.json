@@ -1,0 +1,10 @@
+{
+	"name": "synapse-ws-sql--syn-ws-dlk-dev-01",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/7133dcb0-ac3b-441f-84f4-a8229f4a87e0/resourceGroups/rg-dlk-dev-001/providers/Microsoft.Synapse/workspaces/syn-ws-dlk-dev-01",
+		"groupId": "sql",
+		"fqdns": [
+			"syn-ws-dlk-dev-01.1e27372f-75f1-48ec-acfd-644d91fabd7c.sql.azuresynapse.net"
+		]
+	}
+}

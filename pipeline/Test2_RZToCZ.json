@@ -1,0 +1,23 @@
+{
+	"name": "Test2_RZToCZ",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute Pipeline1",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_Board_Finance_Daily",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2022-12-22T06:01:27Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

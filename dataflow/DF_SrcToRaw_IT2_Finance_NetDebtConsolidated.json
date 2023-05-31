@@ -1,0 +1,81 @@
+{
+	"name": "DF_SrcToRaw_IT2_Finance_NetDebtConsolidated",
+	"properties": {
+		"folder": {
+			"name": "Finance/StageToRaw"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_ADLSStaging_NetDebtConsolidated",
+						"type": "DatasetReference"
+					},
+					"name": "stagingZone"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_ADLSRaw_Net_Debt_Consolidated",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filterRows"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {As Of} as string,",
+				"          Formula as string,",
+				"          {Company(Deal)} as string,",
+				"          {Nebt Debt Grouping} as string,",
+				"          {Nebt Debt Category} as string,",
+				"          TranType5 as string,",
+				"          {Total Net Debt (USD)} as string,",
+				"          Cash as string,",
+				"          {Deferred Costs} as string,",
+				"          {Short Term Debt} as string,",
+				"          {Long Term Debt} as string,",
+				"          Account as string,",
+				"          TranType12 as string,",
+				"          FlowClass as string,",
+				"          Company as string,",
+				"          {Cpty(Deal)} as string,",
+				"          TranRef as string,",
+				"          Facility as string,",
+				"          Currency as string,",
+				"          FlowDate as string,",
+				"          InterestRate as string,",
+				"          RateIndex as string,",
+				"          Spread as string,",
+				"          CurrentInterestRate as string,",
+				"          CurrentSpread as string,",
+				"          {Days to Deal Maturity} as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(),-1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     skipLines: 31,",
+				"     wildcardPaths:[(concat('Finance/IT2/', toString(currentUTC(),'yyyy-MM-dd'),'/Fertiglobe - Net Debt Consolidated USD.csv'))]) ~> stagingZone",
+				"stagingZone filter(!(isNull(isDate({As Of}, 'dd/MM/yyyy'))) && !(isNull(Formula)) && !(isNull({Company(Deal)}))) ~> filterRows",
+				"filterRows sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['Net Debt Consolidated.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}

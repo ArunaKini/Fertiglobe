@@ -1,0 +1,49 @@
+{
+	"name": "DS_Src_RawZone_CategorisedFreeCashFlow",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSRawZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat(formatDateTime(utcNow(),'yyyy-MM-dd'),'/CategorisedFreeCashFlow.csv')",
+					"type": "Expression"
+				},
+				"folderPath": "Finance/ManualExtracts",
+				"fileSystem": "ferti-dl-raw-dev"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Year",
+				"type": "String"
+			},
+			{
+				"name": "Quarter",
+				"type": "String"
+			},
+			{
+				"name": "ValueType",
+				"type": "String"
+			},
+			{
+				"name": "Free_Cash_Flow",
+				"type": "String"
+			},
+			{
+				"name": "Opco",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

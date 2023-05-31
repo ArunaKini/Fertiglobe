@@ -1,0 +1,75 @@
+{
+	"name": "ds_BudgetSample",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSRawZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet1",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Budget Sample.xlsx",
+				"fileSystem": "ferti-dl-raw-dev"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "OpCo",
+				"type": "String"
+			},
+			{
+				"name": "KPIDate",
+				"type": "String"
+			},
+			{
+				"name": "Month",
+				"type": "String"
+			},
+			{
+				"name": "Year",
+				"type": "String"
+			},
+			{
+				"name": "Product",
+				"type": "String"
+			},
+			{
+				"name": "Plant",
+				"type": "String"
+			},
+			{
+				"name": "ValueType",
+				"type": "String"
+			},
+			{
+				"name": "Plan_Year",
+				"type": "String"
+			},
+			{
+				"name": "Downtime",
+				"type": "String"
+			},
+			{
+				"name": "Onstream_Efficiency",
+				"type": "String"
+			},
+			{
+				"name": "Capacity_Efficiency",
+				"type": "String"
+			},
+			{
+				"name": "Asset_Utilization",
+				"type": "String"
+			},
+			{
+				"name": "Prod_MTD",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

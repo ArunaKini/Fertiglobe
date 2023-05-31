@@ -1,0 +1,111 @@
+{
+	"name": "DF_Prod_Production_Summary_History",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Src_Raw_Manual_Prod_ProductionHistory",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Snk_Prod_ProductionHistory",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          Date as string,",
+				"          Month as string,",
+				"          Year as string,",
+				"          OpCo as string,",
+				"          Plant as string,",
+				"          Product as string,",
+				"          {Product Line} as string,",
+				"          Downtime as string,",
+				"          {MTD Downtime} as string,",
+				"          {Production MTPD} as string,",
+				"          {Production MTD} as string,",
+				"          {Asset Utilisation} as string,",
+				"          {Capacity Efficiency} as string,",
+				"          {Onstream Efficiency} as string,",
+				"          Comments as string,",
+				"          {Energy Efficiency} as string,",
+				"          {Budget Monthly} as string,",
+				"          {% of Monthly Budget} as string,",
+				"          {Budget Yearly} as string,",
+				"          {% of Yearly Budget} as string,",
+				"          {Budgeted Production} as string,",
+				"          {Budgeted Asset Utilisation} as string,",
+				"          {Budgeted downtime} as string,",
+				"          {Forecasted Production} as string,",
+				"          {Forecasted Asset Utilisation} as string,",
+				"          {Production Capacity (MPC)} as string,",
+				"          {Days in month} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          KPIDate as date,",
+				"          Month as string,",
+				"          Year as integer,",
+				"          OpCo as string,",
+				"          Product as string,",
+				"          Plant as string,",
+				"          ValueType as string,",
+				"          Plan_Year as string,",
+				"          Production_MTPD as decimal(25,3),",
+				"          Prod_MPC as decimal(25,3),",
+				"          Prod_MTD as decimal(25,3),",
+				"          Budget_Monthly as decimal(25,3),",
+				"          Actual_Monthly_Budget as decimal(25,3),",
+				"          Energy_Efficiency as decimal(25,3),",
+				"          Downtime as decimal(25,3),",
+				"          Onstream_Efficiency as decimal(25,3),",
+				"          Capacity_Efficiency as decimal(25,3),",
+				"          Asset_Utilization as decimal(25,3),",
+				"          Continuous_Operating_Days as decimal(25,3),",
+				"          Onstream_Days as decimal(25,3)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          KPIDate = Date,",
+				"          Year,",
+				"          OpCo,",
+				"          Product,",
+				"          Plant,",
+				"          Production_MTPD = {Production MTPD},",
+				"          Prod_MPC = {Production Capacity (MPC)},",
+				"          Prod_MTD = {Production MTD},",
+				"          Budget_Monthly = {Budget Monthly},",
+				"          Energy_Efficiency = {Energy Efficiency},",
+				"          Downtime,",
+				"          Onstream_Efficiency = {Onstream Efficiency},",
+				"          Capacity_Efficiency = {Capacity Efficiency},",
+				"          Asset_Utilization = {Asset Utilisation}",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

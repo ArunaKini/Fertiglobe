@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 4",
+	"properties": {
+		"content": {
+			"query": "-- This is auto-generated code\nSELECT\n    [ProductionDate], 'EFC' AS [OpCo],'Ammonia 2' AS [PlantName]\n,[SP_CONS_A2PG] AS [ProcessGas],[SP_CONS_A2FG] AS [FuelGas]\nFROM\n    OPENROWSET(\n        BULK 'https://stdlkdevuaenorth001.dfs.core.windows.net/ferti-dl-raw-dev/Production/Maximo/EFC_PRODUCTION/2023-03-02/EFC_DAILY_PRODUCTION_REPORT.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',HEADER_ROW = TRUE\n    ) AS [result]\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,55 @@
+{
+	"name": "DS_LandingZone_Finance_Manual_Archive_CostOfBorrowing",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSStagingZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat(formatDateTime(utcNow(),'yyyy-MM-dd'),'/Cost Of Borrowing.csv')",
+					"type": "Expression"
+				},
+				"folderPath": "Finance/Archive",
+				"fileSystem": "ferti-dl-landing-dev"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

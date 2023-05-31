@@ -1,0 +1,161 @@
+{
+	"name": "DF_RZToCZ_Board_Finance_ActCapexDetails",
+	"properties": {
+		"folder": {
+			"name": "Finance/RawToConformed"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_ActCapexCash",
+						"type": "DatasetReference"
+					},
+					"name": "SrcRawActCapexCash"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_DimProject",
+						"type": "DatasetReference"
+					},
+					"name": "SrcRawDimProject"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_DimEntity",
+						"type": "DatasetReference"
+					},
+					"name": "SrcRawDimEntity"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_Synapse_Act_Capex_Details",
+						"type": "DatasetReference"
+					},
+					"name": "confromedActCapexDetails"
+				}
+			],
+			"transformations": [
+				{
+					"name": "JoinActCapexCashWithDIMPROJECT"
+				},
+				{
+					"name": "JoinActCapexCashWithEntity"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          MONTH as integer,",
+				"          Entity as string,",
+				"          {Project Sub-type} as string,",
+				"          {ACT - CAPEX Cash} as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:['Finance/Capex_Cash/*/ACT_CAPEX_CASH.csv']) ~> SrcRawActCapexCash",
+				"source(output(",
+				"          Project as string,",
+				"          {Project Description} as string,",
+				"          {Project Type} as string,",
+				"          {Project Type Description} as string,",
+				"          {Project SubType} as string,",
+				"          {Project Category} as string,",
+				"          {Project SubType Description} as string,",
+				"          {Project Category Description} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:['Finance/Project/*/PROJECT.csv']) ~> SrcRawDimProject",
+				"source(output(",
+				"          Entity as string,",
+				"          {Entity Description} as string,",
+				"          OCINVT_IFRS as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:['Finance/Entity/*/ENTITY.csv']) ~> SrcRawDimEntity",
+				"SrcRawActCapexCash, SrcRawDimProject join({Project Sub-type} == {Project SubType},",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> JoinActCapexCashWithDIMPROJECT",
+				"JoinActCapexCashWithDIMPROJECT, SrcRawDimEntity join(SrcRawActCapexCash@Entity == SrcRawDimEntity@Entity,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> JoinActCapexCashWithEntity",
+				"select1 aggregate(groupBy(MONTH,",
+				"          Entity,",
+				"          Entity_Description,",
+				"          Project_Type,",
+				"          Project_Type_Description,",
+				"          Project_SubType,",
+				"          {Project _SubType_Description},",
+				"          Act_CAPEX_Cash),",
+				"     RowCnt = count(1)) ~> aggregate1",
+				"JoinActCapexCashWithEntity select(mapColumn(",
+				"          MONTH,",
+				"          Entity = SrcRawDimEntity@Entity,",
+				"          Entity_Description = {Entity Description},",
+				"          Project_Type = {Project Type},",
+				"          Project_Type_Description = {Project Type Description},",
+				"          Project_SubType = {Project Sub-type},",
+				"          {Project _SubType_Description} = {Project SubType Description},",
+				"          Act_CAPEX_Cash = {ACT - CAPEX Cash}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Month as integer,",
+				"          Entity as string,",
+				"          Entity_Description as string,",
+				"          Project_Type as string,",
+				"          Project_Type_Description as string,",
+				"          Project_SubType as string,",
+				"          Project_SubType_Description as string,",
+				"          Act_Capex_Cash as decimal(38,3)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Month = MONTH,",
+				"          Entity,",
+				"          Entity_Description,",
+				"          Project_Type,",
+				"          Project_Type_Description,",
+				"          Project_SubType,",
+				"          Project_SubType_Description = {Project _SubType_Description},",
+				"          Act_Capex_Cash = Act_CAPEX_Cash",
+				"     )) ~> confromedActCapexDetails"
+			]
+		}
+	}
+}

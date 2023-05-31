@@ -1,0 +1,72 @@
+{
+	"name": "DF_RZToCZ_Manual_Finance_CategorisedFreeCashFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_CategorisedFreeCashFlow",
+						"type": "DatasetReference"
+					},
+					"name": "CategorisedFreeCashFlow"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_Categorised_Free_Cash_Flow",
+						"type": "DatasetReference"
+					},
+					"name": "SnkCategorisedFreeCashFlow"
+				}
+			],
+			"transformations": [
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Year as string,",
+				"          Quarter as string,",
+				"          ValueType as string,",
+				"          Free_Cash_Flow as string,",
+				"          Opco as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> CategorisedFreeCashFlow",
+				"CategorisedFreeCashFlow alterRow(deleteIf(isNull(Year)&&isNull(Quarter)&&isNull(ValueType)),",
+				"     upsertIf(true())) ~> alterRow1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Year as integer,",
+				"          Quarter as string,",
+				"          ValueType as string,",
+				"          Cash_Value as decimal(25,8),",
+				"          Opco as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['Year','Quarter','ValueType','Opco'],",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Year,",
+				"          Quarter,",
+				"          ValueType,",
+				"          Cash_Value = Free_Cash_Flow,",
+				"          Opco",
+				"     )) ~> SnkCategorisedFreeCashFlow"
+			]
+		}
+	}
+}

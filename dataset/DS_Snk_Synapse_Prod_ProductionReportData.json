@@ -1,0 +1,125 @@
+{
+	"name": "DS_Snk_Synapse_Prod_ProductionReportData",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "Date",
+				"type": "date"
+			},
+			{
+				"name": "Month",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Year",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OpCo",
+				"type": "varchar"
+			},
+			{
+				"name": "Plant",
+				"type": "varchar"
+			},
+			{
+				"name": "Product",
+				"type": "varchar"
+			},
+			{
+				"name": "Downtime",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 18
+			},
+			{
+				"name": "Production_MTPD",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 18
+			},
+			{
+				"name": "Production_MTD",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 18
+			},
+			{
+				"name": "Asset_Utilisation",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 18
+			},
+			{
+				"name": "Capacity_Efficiency",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 18
+			},
+			{
+				"name": "Onstream_Efficiency",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 18
+			},
+			{
+				"name": "Energy_Efficiency",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 18
+			},
+			{
+				"name": "Budgeted_Production",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 18
+			},
+			{
+				"name": "Budgeted_Asset_Utilisation",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 18
+			},
+			{
+				"name": "Forecasted_Production",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 18
+			},
+			{
+				"name": "Forecasted_Asset_Utilisation",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 18
+			},
+			{
+				"name": "Production_Capacity_MPC",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 18
+			},
+			{
+				"name": "MTD_Downtime",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 18
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Prod_ProductionReportData"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

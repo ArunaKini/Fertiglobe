@@ -1,0 +1,86 @@
+{
+	"name": "PL_RZToCZ_Maximo_Production",
+	"properties": {
+		"activities": [
+			{
+				"name": "EP_DailyProductionSummary",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_MXM_Production_DailyProductionSummary",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_EnergyMetricsEBIC",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_DailyProductionSummary",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_MXM_Production_EnergyMetricsEBIC",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_EnergyMetricsEFC",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_EnergyMetricsEBIC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_MXM_Production_EnergyMetricsEFC",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_EnergyMetricsFertil",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_EnergyMetricsEFC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_MXM_Production_EnergyMetricsFertil",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Production/RawToConformed"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-02-23T12:10:14Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

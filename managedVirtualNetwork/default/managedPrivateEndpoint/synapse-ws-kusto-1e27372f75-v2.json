@@ -1,0 +1,10 @@
+{
+	"name": "synapse-ws-kusto-1e27372f75-v2",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/7133dcb0-ac3b-441f-84f4-a8229f4a87e0/resourceGroups/rg-dlk-dev-001/providers/Microsoft.Synapse/workspaces/syn-ws-dlk-dev-01",
+		"groupId": "Kusto",
+		"fqdns": [
+			"dldevpool.syn-ws-dlk-dev-01.kusto.azuresynapse.net"
+		]
+	}
+}

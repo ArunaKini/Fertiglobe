@@ -1,0 +1,117 @@
+{
+	"name": "DF_RZToCZ_Board_Finance_BudgetProductionDetails",
+	"properties": {
+		"folder": {
+			"name": "Finance/RawToConformed"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_FctProductionDetails",
+						"type": "DatasetReference"
+					},
+					"name": "SrcBudgetProductionDetails"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_Synapse_Budget_Production_Details",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     Scenario as integer,",
+				"     Version as integer",
+				"}",
+				"source(output(",
+				"          Month as integer,",
+				"          Entity as string,",
+				"          Metric as string,",
+				"          Plant as string,",
+				"          {PLAN - Production Volumes} as double,",
+				"          Scenario as short,",
+				"          {Plan Year} as short,",
+				"          Version as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:['Finance/Fct_Production_Detail/*/FCT_PRODUCTION_DETAIL.csv']) ~> SrcBudgetProductionDetails",
+				"filter1 select(mapColumn(",
+				"          Month,",
+				"          Entity,",
+				"          Metric,",
+				"          Plant,",
+				"          Budget_Production_Volumes = {PLAN - Production Volumes},",
+				"          Scenario,",
+				"          Version,",
+				"          Plan_Year = {Plan Year}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 aggregate(groupBy(Month,",
+				"          Entity,",
+				"          Plant,",
+				"          Metric,",
+				"          Scenario,",
+				"          Version,",
+				"          Plan_Year,",
+				"          Budget_Production_Volumes),",
+				"     Cnt = count(1)) ~> aggregate1",
+				"SrcBudgetProductionDetails filter({Metric} == 'PROD_FERT_PR' && Scenario == $Scenario  &&  Version == $Version) ~> filter1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Month as integer,",
+				"          Entity as string,",
+				"          Metric as string,",
+				"          Plant as string,",
+				"          Scenario as integer,",
+				"          Version as integer,",
+				"          Plan_Year as integer,",
+				"          Budget_Production_Volumes as decimal(38,20)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Month,",
+				"          Entity,",
+				"          Metric,",
+				"          Plant,",
+				"          Budget_Production_Volumes,",
+				"          Scenario,",
+				"          Version,",
+				"          Plan_Year",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

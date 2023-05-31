@@ -1,0 +1,37 @@
+{
+	"name": "DS_Conformed_Finance_Manual_StockHourly",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "Company",
+				"type": "varchar"
+			},
+			{
+				"name": "ValueDate",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			},
+			{
+				"name": "Stock_Value",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Stock_Price"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

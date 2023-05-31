@@ -1,0 +1,24 @@
+{
+	"name": "TRG_LZtoRZtoCZtoConZ_Finance_Manual",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PL_Manual_Finance_FctNetDebtEBITDA",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/ferti-dl-landing-dev/blobs/Finance/ManualExtracts/",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/7133dcb0-ac3b-441f-84f4-a8229f4a87e0/resourceGroups/rg-dlk-dev-001/providers/Microsoft.Storage/storageAccounts/stdlkdevuaenorth001",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"name": "Plain",
+	"properties": {
+		"content": {
+			"query": "SELECT * FROM   consumption.Finance_Details    --consumption.Revenue_By_Product  \nWHERE OpCo like '%Fertiglobe Holding Ltd%' AND Year = 2022 AND Month = 'Dec' AND ValueType = 'RF10' --AND Product = 'AMMO'  -- Actual  -- Matching\n\n--WHERE  Year = 2022 AND Month = 'Mar' AND ValueType = 'RF10' AND Entity = 3004  AND Product = 'UREA'-- Not IN('Actual', 'Budget')  -- Forecast  -- Matching\n\n--WHERE  Year = 2022 AND Month = 'Mar' AND ValueType = 'Budget' AND Plan_Year = 2021 AND Entity = 3004  AND Product = 'UREA' -- Budget",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "synwsdb01",
+				"poolName": "synwsdb01"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

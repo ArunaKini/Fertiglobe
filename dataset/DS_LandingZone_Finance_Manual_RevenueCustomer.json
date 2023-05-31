@@ -1,0 +1,44 @@
+{
+	"name": "DS_LandingZone_Finance_Manual_RevenueCustomer",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSStagingZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet1",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Revenue Customer.xlsx",
+				"folderPath": "Finance/ManualExtracts",
+				"fileSystem": "ferti-dl-landing-dev"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Customer",
+				"type": "String"
+			},
+			{
+				"name": "Revenue",
+				"type": "String"
+			},
+			{
+				"name": "Price per Ton",
+				"type": "String"
+			},
+			{
+				"name": "Benchmark Price per Ton",
+				"type": "String"
+			},
+			{
+				"name": "Volume",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

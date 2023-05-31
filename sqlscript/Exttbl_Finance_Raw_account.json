@@ -1,0 +1,17 @@
+{
+	"name": "Exttbl_Finance_Raw_account",
+	"properties": {
+		"content": {
+			"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseDelimitedTextFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseDelimitedTextFormat] \n\tWITH ( FORMAT_TYPE = DELIMITEDTEXT ,\n\t       FORMAT_OPTIONS (\n\t\t\t FIELD_TERMINATOR = ',',\n\t\t\t USE_TYPE_DEFAULT = FALSE\n\t\t\t))\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'ferti-dl-raw-dev_stdlkdevuaenorth001_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [ferti-dl-raw-dev_stdlkdevuaenorth001_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://ferti-dl-raw-dev@stdlkdevuaenorth001.dfs.core.windows.net', \n\t\tTYPE = HADOOP \n\t)\nGO\n\nCREATE EXTERNAL TABLE dbo.Finance_Raw_account (\n\t[Account] [nvarchar](4000),\n\t[Account Description] [nvarchar](4000),\n\t[Account Type Description] [nvarchar](4000),\n\t[MR Account] [nvarchar](4000),\n\t[MR Account Description] [nvarchar](4000),\n\t[Statuary Account Description] [nvarchar](4000)\n\t)\n\tWITH (\n\tLOCATION = 'Finance/Account/2022-11-24/Account_Details.csv',\n\tDATA_SOURCE = [ferti-dl-raw-dev_stdlkdevuaenorth001_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseDelimitedTextFormat]\n\t)\nGO\n\n\nSELECT  * FROM dbo.Finance_Raw_account\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "synwsdb01",
+				"poolName": "synwsdb01"
+			},
+			"resultLimit": -1
+		},
+		"type": "SqlQuery"
+	}
+}

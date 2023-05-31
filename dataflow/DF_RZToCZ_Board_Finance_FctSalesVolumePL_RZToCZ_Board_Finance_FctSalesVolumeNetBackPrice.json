@@ -1,0 +1,180 @@
+{
+	"name": "DF_RZToCZ_Board_Finance_FctSalesVolumePL_RZToCZ_Board_Finance_FctSalesVolumeNetBackPrice",
+	"properties": {
+		"folder": {
+			"name": "Finance/RawToConformed"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_FctSalesPriceDetailed",
+						"type": "DatasetReference"
+					},
+					"name": "SrcFctSalesPriceDetailed"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_FctSalesVolumes",
+						"type": "DatasetReference"
+					},
+					"name": "SrcFctSalesVolume"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_Synapse_Fct_SalesVolumeNetBackPrice",
+						"type": "DatasetReference"
+					},
+					"name": "SnkFctSalesVolumeNetBackPrice"
+				}
+			],
+			"transformations": [
+				{
+					"name": "joinFctSalesPriceDetailedWithFctSalesVolumes"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "aggregate1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Month as integer,",
+				"          Entity as short,",
+				"          Counterparty as string,",
+				"          Scenario as short,",
+				"          {Plan Year} as string,",
+				"          Version as short,",
+				"          {Trading/Own Produced} as string,",
+				"          {Other Revenue Details} as string,",
+				"          Product as string,",
+				"          {Price Component} as short,",
+				"          {Volume Type} as short,",
+				"          {PLAN - Revenue Net Back Prices} as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:['Finance/Fct_Sales_Price_Detail/*/FCT_SALES_PRICE_DETAILED.csv']) ~> SrcFctSalesPriceDetailed",
+				"source(output(",
+				"          Month as integer,",
+				"          Entity as short,",
+				"          Counterparty as string,",
+				"          Scenario as short,",
+				"          {Plan Year} as string,",
+				"          Version as short,",
+				"          {Trading/Own Produced} as string,",
+				"          {Other Revenue Details} as string,",
+				"          Product as string,",
+				"          {Volume Type} as short,",
+				"          {PLAN - Sold Volumes} as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:['Finance/Fct_Sales_Volume/*/FCT_SALES_VOLUMES.csv']) ~> SrcFctSalesVolume",
+				"SrcFctSalesPriceDetailed, SrcFctSalesVolume join(SrcFctSalesPriceDetailed@Month == SrcFctSalesVolume@Month",
+				"     && SrcFctSalesPriceDetailed@Entity == SrcFctSalesVolume@Entity",
+				"     && SrcFctSalesPriceDetailed@Product == SrcFctSalesVolume@Product",
+				"     && SrcFctSalesPriceDetailed@{Other Revenue Details} == SrcFctSalesVolume@{Other Revenue Details}",
+				"     && SrcFctSalesPriceDetailed@Counterparty == SrcFctSalesVolume@Counterparty",
+				"     && SrcFctSalesPriceDetailed@{Volume Type} == SrcFctSalesVolume@{Volume Type}",
+				"     && SrcFctSalesPriceDetailed@{Trading/Own Produced} == SrcFctSalesVolume@{Trading/Own Produced}",
+				"     && SrcFctSalesPriceDetailed@Scenario == SrcFctSalesVolume@Scenario",
+				"     && SrcFctSalesPriceDetailed@Version == SrcFctSalesVolume@Version",
+				"     && SrcFctSalesPriceDetailed@{Plan Year} == SrcFctSalesVolume@{Plan Year},",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinFctSalesPriceDetailedWithFctSalesVolumes",
+				"joinFctSalesPriceDetailedWithFctSalesVolumes filter({Price Component} == 941) ~> filter1",
+				"filter1 select(mapColumn(",
+				"          Month = SrcFctSalesPriceDetailed@Month,",
+				"          Entity = SrcFctSalesPriceDetailed@Entity,",
+				"          Product = SrcFctSalesPriceDetailed@Product,",
+				"          Other_Revenue_Details = SrcFctSalesPriceDetailed@{Other Revenue Details},",
+				"          Scenario = SrcFctSalesPriceDetailed@Scenario,",
+				"          Version = SrcFctSalesPriceDetailed@Version,",
+				"          Plan_Year = SrcFctSalesPriceDetailed@{Plan Year},",
+				"          Counterparty = SrcFctSalesPriceDetailed@Counterparty,",
+				"          Volume_Type = SrcFctSalesPriceDetailed@{Volume Type},",
+				"          {Trading/Own_Produced} = SrcFctSalesPriceDetailed@{Trading/Own Produced},",
+				"          Fct_Revenue_Prices = {Price Component},",
+				"          Fct_Revenue_Net_Back_Prices = {PLAN - Revenue Net Back Prices},",
+				"          Fct_Revenue_Volumes = {PLAN - Sold Volumes}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 aggregate(groupBy(Month,",
+				"          Entity,",
+				"          Product,",
+				"          Other_Revenue_Details,",
+				"          Scenario,",
+				"          Version,",
+				"          Plan_Year,",
+				"          Counterparty,",
+				"          Volume_Type,",
+				"          {Trading/Own Produced} = {Trading/Own_Produced},",
+				"          Fct_Revenue_Prices,",
+				"          Fct_Revenue_Net_Back_Prices,",
+				"          Fct_Revenue_Volumes),",
+				"     Cnt = count(1)) ~> aggregate1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Month as integer,",
+				"          Entity as string,",
+				"          Product as string,",
+				"          Other_Revenue_Details as string,",
+				"          Plan_Year as integer,",
+				"          Scenario as integer,",
+				"          Version as integer,",
+				"          Counterparty as string,",
+				"          Volume_Type as string,",
+				"          {Trading/Own_Produced} as string,",
+				"          Fct_Revenue_Prices as decimal(38,20),",
+				"          Fct_Revenue_Net_Back_Prices as decimal(38,20),",
+				"          Fct_Revenue_Volumes as decimal(38,20)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Month,",
+				"          Entity,",
+				"          Product,",
+				"          Other_Revenue_Details,",
+				"          Plan_Year,",
+				"          Scenario,",
+				"          Version,",
+				"          Counterparty,",
+				"          Volume_Type,",
+				"          {Trading/Own_Produced} = {Trading/Own Produced},",
+				"          Fct_Revenue_Prices,",
+				"          Fct_Revenue_Net_Back_Prices,",
+				"          Fct_Revenue_Volumes",
+				"     )) ~> SnkFctSalesVolumeNetBackPrice"
+			]
+		}
+	}
+}

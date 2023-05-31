@@ -1,0 +1,106 @@
+{
+	"name": "PL_RZToCZ_Board_Production_Budget",
+	"properties": {
+		"activities": [
+			{
+				"name": "EP_Board_BudgetProductionDetails",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_Board_Production_BudgetProductionDetails",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"Scenario": {
+							"value": "@pipeline().parameters.Scenario",
+							"type": "Expression"
+						},
+						"Version": {
+							"value": "@pipeline().parameters.Version",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "EP_Board_Production_BudgetQuantityInputPerTonTotal",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_Board_BudgetProductionDetails",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_Board_Production_BudgetQuantityInputPerTonTotal",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"Scenario": {
+							"value": "@pipeline().parameters.Scenario",
+							"type": "Expression"
+						},
+						"Version": {
+							"value": "@pipeline().parameters.Version",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "EP_Board_Production_BudgetGasPricesInputPerTonPlant",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_Board_Production_BudgetQuantityInputPerTonTotal",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_Board_Production_BudgetGasPricesInputPerTonPlant",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"Scenario": {
+							"value": "@pipeline().parameters.Scenario",
+							"type": "Expression"
+						},
+						"Version": {
+							"value": "@pipeline().parameters.Version",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"Scenario": {
+				"type": "int",
+				"defaultValue": 10
+			},
+			"Version": {
+				"type": "int",
+				"defaultValue": 1
+			}
+		},
+		"folder": {
+			"name": "Production/RawToConformed"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-03-13T07:44:06Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

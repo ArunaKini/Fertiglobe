@@ -1,0 +1,72 @@
+{
+	"name": "DF_SrcToRaw_IT2_Finance_ConsolidatedCash",
+	"properties": {
+		"folder": {
+			"name": "Finance/StageToRaw"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_ADLSStaging_Consolidated_Cash",
+						"type": "DatasetReference"
+					},
+					"name": "stagingZone"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_ADLSRaw_Consolidated_Cash",
+						"type": "DatasetReference"
+					},
+					"name": "rawZone"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filterRows"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Grouping as string,",
+				"          {Cash Type} as string,",
+				"          {Company Sector} as string,",
+				"          Company as string,",
+				"          Bank as string,",
+				"          AccountNumber as string,",
+				"          {All (USD)} as string,",
+				"          {All (USD)(Prev)} as string,",
+				"          {Delta All (USD)} as string,",
+				"          {USD (CCY)} as string,",
+				"          {EUR (CCY)} as string,",
+				"          {EGP (CCY)} as string,",
+				"          {GBP (CCY)} as string,",
+				"          {DZD (CCY)} as string,",
+				"          {JPY (CCY)} as string,",
+				"          {AED (CCY)} as string,",
+				"          {CNY (CCY)} as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(),-1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     skipLines: 39,",
+				"     wildcardPaths:[(concat('Finance/IT2/', toString(currentUTC(),'yyyy-MM-dd'),'/Fertiglobe - Consolidated Cash Position.csv'))]) ~> stagingZone",
+				"stagingZone filter(in(['00 Total Balance Sheet Cash', 'Not Defined'], Grouping) && !(isNull({Cash Type})) && !(isNull({Company Sector}))) ~> filterRows",
+				"filterRows sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['Consolidated_Cash.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> rawZone"
+			]
+		}
+	}
+}

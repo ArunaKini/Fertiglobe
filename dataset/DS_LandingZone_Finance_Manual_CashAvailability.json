@@ -1,0 +1,32 @@
+{
+	"name": "DS_LandingZone_Finance_Manual_CashAvailability",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSStagingZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet1",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Available Cash.xlsx",
+				"folderPath": "Finance/ManualExtracts",
+				"fileSystem": "ferti-dl-landing-dev"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Date",
+				"type": "String"
+			},
+			{
+				"name": "Cash",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

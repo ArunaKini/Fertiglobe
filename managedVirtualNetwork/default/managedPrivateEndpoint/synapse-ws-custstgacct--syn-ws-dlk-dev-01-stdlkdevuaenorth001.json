@@ -1,0 +1,10 @@
+{
+	"name": "synapse-ws-custstgacct--syn-ws-dlk-dev-01-stdlkdevuaenorth001",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/7133dcb0-ac3b-441f-84f4-a8229f4a87e0/resourceGroups/rg-dlk-dev-001/providers/Microsoft.Storage/storageAccounts/stdlkdevuaenorth001",
+		"groupId": "dfs",
+		"fqdns": [
+			"stdlkdevuaenorth001.dfs.core.windows.net"
+		]
+	}
+}

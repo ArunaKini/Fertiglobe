@@ -1,0 +1,40 @@
+{
+	"name": "DS_Snk_Synapse_ACTAverageFxRates_1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "Month",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Functional_Currency",
+				"type": "varchar"
+			},
+			{
+				"name": "Transactional_Currency",
+				"type": "varchar"
+			},
+			{
+				"name": "ACT_FX_Loans_AVG",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 20
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "ACT_AVERAGE_FX_RATES"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

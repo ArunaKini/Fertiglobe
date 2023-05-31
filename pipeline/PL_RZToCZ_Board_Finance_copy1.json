@@ -1,0 +1,257 @@
+{
+	"name": "PL_RZToCZ_Board_Finance_copy1",
+	"properties": {
+		"activities": [
+			{
+				"name": "EP_ActAverageFxRates",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_Board_Finance_ActAverageFxRates",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_ActCapexDetails",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_ActAverageFxRates",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_Board_Finance_ActCapexDetails",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_ActFinanceDetails",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_ActCapexDetails",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_Board_Finance_ActFinanceDetails",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_ActInventoryVolume",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_ActFinanceDetails",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_Board_Finance_ActInventoryVolume",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_ActProductionDetails",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_ActInventoryVolume",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_Board_Finance_ActProductionDetails",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_ActSalesVolumePrice",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_ActProductionDetails",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_Board_Finance_ActSalesVolumePrice",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_FctAverageFxRates",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_Board_Finance_FctAverageFxRates",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_FctCapexDetails",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_FctAverageFxRates",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_Board_Finance_FctCapexDetails",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_FctFinanceDetails",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_FctCapexDetails",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_Board_Finance_FctFinanceDetails",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_FctInventoryVolume",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_FctFinanceDetails",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_Board_Finance_FctInventoryVolume",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_FctProductionDetails",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_FctInventoryVolume",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_Board_Finance_FctProductionDetails",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_FctSalesVolumePrice",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_FctProductionDetails",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_Board_Finance_FctSalesVolumePrice",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_Daily",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_Board_Finance_Daily",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"variables": {
+			"DataRefreshDate": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Finance/RawToConformed"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-23T11:02:01Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

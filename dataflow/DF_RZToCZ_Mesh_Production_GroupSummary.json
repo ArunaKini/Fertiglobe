@@ -1,0 +1,128 @@
+{
+	"name": "DF_RZToCZ_Mesh_Production_GroupSummary",
+	"properties": {
+		"folder": {
+			"name": "Production"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_Prod_GroupSummary",
+						"type": "DatasetReference"
+					},
+					"name": "SrcRawZoneGroupSummary"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_Synapse_Prod_Group_Summary",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "unpivot1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "pivot1"
+				},
+				{
+					"name": "MapDrifted34",
+					"description": "Creates an explicit mapping for each drifted column"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "RemoveDups",
+					"description": "Remove dups based on Description,\tUnit and Year\n"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Description as string,",
+				"          Unit as string,",
+				"          {EBIC Ammonia} as double,",
+				"          {EFC Ammonia 1} as double,",
+				"          {EFC Ammonia 2} as double,",
+				"          {EFC Urea 1} as double,",
+				"          {EFC Urea 2} as double,",
+				"          {Fertil Ammonia 1} as double,",
+				"          {Fertil Ammonia 2} as double,",
+				"          {Fertil Urea 1} as double,",
+				"          {Fertil Urea 2} as double,",
+				"          {Sorfert Ammonia 1} as double,",
+				"          {Sorfert Ammonia 2} as double,",
+				"          {Sorfert Urea} as double,",
+				"          Total as double,",
+				"          Year as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:['Production/Group_Summary/*/GROUP_SUMMARY.csv']) ~> SrcRawZoneGroupSummary",
+				"RemoveDups unpivot(output(",
+				"          Plant as string,",
+				"          Value as double",
+				"     ),",
+				"     ungroupBy(Description,",
+				"          Unit,",
+				"          Year),",
+				"     lateral: true,",
+				"     ignoreNullPivots: false) ~> unpivot1",
+				"SrcRawZoneGroupSummary filter(in(['Production', 'Total Net Energy LHV (Feed + Fuel + Other) / tons', 'Total Scope 1+2+3 GHG CO2 in tons'], Description)) ~> filter1",
+				"unpivot1 pivot(groupBy(Year,",
+				"          Plant),",
+				"     pivotBy(Description),",
+				"     {} = sum(Value),",
+				"     columnNaming: '$N$V',",
+				"     lateral: false) ~> pivot1",
+				"pivot1 derive(Production = toDouble(byName('Production')),",
+				"          {Total Net Energy LHV (Feed + Fuel + Other) / tons} = toDouble(byName('Total Net Energy LHV (Feed + Fuel + Other) / tons')),",
+				"          {Total Scope 1+2+3 GHG CO2 in tons} = toDouble(byName('Total Scope 1+2+3 GHG CO2 in tons'))) ~> MapDrifted34",
+				"MapDrifted34 derive(Energy_Efficiency = {Total Net Energy LHV (Feed + Fuel + Other) / tons},",
+				"          GHG_per_ton_of_ammonia_produced = {Total Scope 1+2+3 GHG CO2 in tons}) ~> derivedColumn1",
+				"filter1 aggregate(groupBy(Description,",
+				"          Unit,",
+				"          Year),",
+				"     each(match(name!='Description'&&name!='Year'&&name!='Unit'), $$ = first($$))) ~> RemoveDups",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Year as string,",
+				"          Plant as string,",
+				"          Energy_efficiency as decimal(25,18),",
+				"          GHG_per_ton_of_ammonia_produced as decimal(25,18)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Year,",
+				"          Plant,",
+				"          Energy_efficiency = Energy_Efficiency,",
+				"          GHG_per_ton_of_ammonia_produced",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

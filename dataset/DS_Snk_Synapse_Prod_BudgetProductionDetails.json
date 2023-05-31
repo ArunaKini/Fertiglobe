@@ -1,0 +1,112 @@
+{
+	"name": "DS_Snk_Synapse_Prod_BudgetProductionDetails",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "Month",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Entity",
+				"type": "varchar"
+			},
+			{
+				"name": "OpCo",
+				"type": "varchar"
+			},
+			{
+				"name": "Product",
+				"type": "varchar"
+			},
+			{
+				"name": "Plant",
+				"type": "varchar"
+			},
+			{
+				"name": "Metric",
+				"type": "varchar"
+			},
+			{
+				"name": "Scenario",
+				"type": "varchar"
+			},
+			{
+				"name": "Version",
+				"type": "varchar"
+			},
+			{
+				"name": "Plan_Year",
+				"type": "varchar"
+			},
+			{
+				"name": "Asset_Utilization",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "Capacity_Efficiency",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "Operational_Efficiency",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "Unplanned_Shutdown_Days",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "Total_Stop_Days",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "Prod_MTPD",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "Prod_MPC",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "Planned_Other_Stop_Days",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "Planned_Turnaround_Days",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Prod_Budget_Production_Details"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

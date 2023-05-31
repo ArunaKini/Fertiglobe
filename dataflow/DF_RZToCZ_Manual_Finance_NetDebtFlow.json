@@ -1,0 +1,89 @@
+{
+	"name": "DF_RZToCZ_Manual_Finance_NetDebtFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_NetDebtFlow",
+						"type": "DatasetReference"
+					},
+					"name": "NetDebtFlow",
+					"description": "Import data from DS_Src_RawZone_NetDebtFlow"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_NetDebt_Flow",
+						"type": "DatasetReference"
+					},
+					"name": "SnkNetDebtFlow",
+					"description": "Export data to DS_Snk_Net_Debt_Flow"
+				}
+			],
+			"transformations": [
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Year as string,",
+				"          Quarter as string,",
+				"          Month as string,",
+				"          Company as string,",
+				"          ValueType as string,",
+				"          Available_Cash as string,",
+				"          Net_Debt as string,",
+				"          Short_Term_Debt as string,",
+				"          Long_Term_Debt as string,",
+				"          Deferred_Costs as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> NetDebtFlow",
+				"NetDebtFlow alterRow(deleteIf(isNull(Year)&&isNull(Quarter)&&isNull(Month)&&isNull(Company)&&isNull(ValueType)),",
+				"     upsertIf(true())) ~> alterRow1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Year as integer,",
+				"          Quarter as integer,",
+				"          Month as integer,",
+				"          Company as string,",
+				"          ValueType as string,",
+				"          Available_Cash as decimal(38,20),",
+				"          Net_Debt as decimal(38,20),",
+				"          Short_Term_Debt as decimal(38,20),",
+				"          Long_Term_Debt as decimal(38,20),",
+				"          Deferred_Costs as decimal(38,20)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['Year','Quarter','Month','Company','ValueType'],",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Year,",
+				"          Quarter,",
+				"          Month,",
+				"          Company,",
+				"          ValueType,",
+				"          Available_Cash,",
+				"          Net_Debt,",
+				"          Short_Term_Debt,",
+				"          Long_Term_Debt,",
+				"          Deferred_Costs",
+				"     )) ~> SnkNetDebtFlow"
+			]
+		}
+	}
+}

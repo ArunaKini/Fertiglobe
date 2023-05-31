@@ -1,0 +1,102 @@
+{
+	"name": "DF_RZToCZ_Board_Finance_ActProductionDetails",
+	"properties": {
+		"folder": {
+			"name": "Finance/RawToConformed"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_ActProductionDetails",
+						"type": "DatasetReference"
+					},
+					"name": "ArcActProductionDetails"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_Synapse_Act_Production_Details",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "aggregate1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Month as integer,",
+				"          Entity as string,",
+				"          Plant as string,",
+				"          Metric as string,",
+				"          {ACT - Production Volumes} as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:['Finance/Act_Production_Detail/*/ACT_PRODUCTION_DETAIL.csv']) ~> ArcActProductionDetails",
+				"derivedColumn1 select(mapColumn(",
+				"          Month,",
+				"          Entity,",
+				"          Metric,",
+				"          Plant,",
+				"          ACT_Production_Volumes = {ACT - Production_Volumes}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"filter1 derive({ACT - Production_Volumes} = case(isNull({ACT - Production Volumes}), toDouble(0), {ACT - Production Volumes})) ~> derivedColumn1",
+				"ArcActProductionDetails filter({Metric} == 'PROD_FERT_PR') ~> filter1",
+				"select1 aggregate(groupBy(Month,",
+				"          Entity,",
+				"          Metric,",
+				"          Plant,",
+				"          ACT_Production_Volumes),",
+				"     Cnt = count(1)) ~> aggregate1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Month as integer,",
+				"          Entity as string,",
+				"          Metric as string,",
+				"          Plant as string,",
+				"          Act_Production_Volumes as decimal(38,20)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Month,",
+				"          Entity,",
+				"          Metric,",
+				"          Plant,",
+				"          Act_Production_Volumes = ACT_Production_Volumes",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

@@ -1,0 +1,48 @@
+{
+	"name": "DS_LandingZone_Executive_Manual_WANetbackBenchmarkPrices",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSStagingZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Netback & Benchmark Prices",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "WA Netback  Benchark Prices.xlsx",
+				"folderPath": "Executive/ManualExtracts",
+				"fileSystem": "ferti-dl-landing-dev"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Month",
+				"type": "String"
+			},
+			{
+				"name": "Year",
+				"type": "String"
+			},
+			{
+				"name": "Product ",
+				"type": "String"
+			},
+			{
+				"name": "ValueType",
+				"type": "String"
+			},
+			{
+				"name": "WA Netbacks",
+				"type": "String"
+			},
+			{
+				"name": "Benchmark",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

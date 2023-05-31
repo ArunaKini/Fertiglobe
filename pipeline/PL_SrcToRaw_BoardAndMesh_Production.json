@@ -1,0 +1,139 @@
+{
+	"name": "PL_SrcToRaw_BoardAndMesh_Production",
+	"properties": {
+		"activities": [
+			{
+				"name": "EP_Mesh_GroupSummary",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_SrcToRaw_Mesh_Production_GroupSummary",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_Mesh_SitesDataContractor",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_Mesh_GroupSummary",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_SrcToRaw_Mesh_Production_SitesDataContractor",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_Mesh_SitesDataEmployee",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_Mesh_SitesDataContractor",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_SrcToRaw_Mesh_Production_SitesDataEmployee",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_Board_ActProductionDetails",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_SrcToRaw_Board_Production_ActProductionDetails",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_Board_FctProductionDetails",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_Board_ActProductionDetails",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_SrcToRaw_Board_Production_FctProductionDetails",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_Board_Production_Fct_QuantityInputPerTonTotal",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_Board_FctProductionDetails",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_SrcToRaw_Board_Production_FctQuantityInputPerTonTotal",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "EP_Board_Production_FctGasPricesInputPerTonPlant",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "EP_Board_Production_Fct_QuantityInputPerTonTotal",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_SrcToRaw_Board_Production_FctGasPricesInputPerTonPlant",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "Production/SourceToRaw"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-02-23T12:10:20Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

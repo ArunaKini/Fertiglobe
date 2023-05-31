@@ -1,0 +1,17 @@
+{
+	"name": "FGTrading",
+	"properties": {
+		"content": {
+			"query": "SELECT * FROM consumption.Revenue_By_Product  \n--WHERE Year = 2022 AND Month = 'Mar' AND ValueType = 'Actual' AND Entity = 'FG Trading'   -- Actual\n\n--WHERE  Year = 2022 AND Month = 'Mar' AND ValueType = 'RF10' AND Entity = 'FG Trading' -- Not IN('Actual', 'Budget')  -- Forecast\n\nWHERE  Year = 2022 AND Month = 'Mar' AND ValueType = 'Budget' AND Plan_Year = 2021 AND Entity = 'FG Trading' -- Budget",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "synwsdb01",
+				"poolName": "synwsdb01"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

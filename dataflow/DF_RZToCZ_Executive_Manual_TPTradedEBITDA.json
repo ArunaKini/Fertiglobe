@@ -1,0 +1,66 @@
+{
+	"name": "DF_RZToCZ_Executive_Manual_TPTradedEBITDA",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_TPTradedEBITDA",
+						"type": "DatasetReference"
+					},
+					"name": "SrcRawZoneTPTradedEBITDA"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_TP_Traded_EBITDA",
+						"type": "DatasetReference"
+					},
+					"name": "TrgConformedZoneTPTradedEBITDA"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          Month as string,",
+				"          Year as short,",
+				"          {Product } as string,",
+				"          ValueType as string,",
+				"          {Thirdparty Traded Ebitda} as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SrcRawZoneTPTradedEBITDA",
+				"SrcRawZoneTPTradedEBITDA sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Month as string,",
+				"          Year as integer,",
+				"          Product as string,",
+				"          ValueType as string,",
+				"          ThirdPartyTradedEBITDA as decimal(38,2)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Month,",
+				"          Year,",
+				"          Product = {Product },",
+				"          ValueType,",
+				"          ThirdPartyTradedEBITDA = {Thirdparty Traded Ebitda}",
+				"     )) ~> TrgConformedZoneTPTradedEBITDA"
+			]
+		}
+	}
+}

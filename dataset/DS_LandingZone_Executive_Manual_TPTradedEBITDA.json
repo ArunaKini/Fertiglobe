@@ -1,0 +1,44 @@
+{
+	"name": "DS_LandingZone_Executive_Manual_TPTradedEBITDA",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSStagingZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "TP Traded EBITDA ",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "TP Traded EBITDA.xlsx",
+				"folderPath": "Executive/ManualExtracts",
+				"fileSystem": "ferti-dl-landing-dev"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Month",
+				"type": "String"
+			},
+			{
+				"name": "Year",
+				"type": "String"
+			},
+			{
+				"name": "Product ",
+				"type": "String"
+			},
+			{
+				"name": "ValueType",
+				"type": "String"
+			},
+			{
+				"name": "Thirdparty Traded Ebitda",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

@@ -1,0 +1,41 @@
+{
+	"name": "DS_Src_RawZone_ActAverageFxRates",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSRawZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "Finance/ACT_AVERAGE_FX_RATES",
+				"fileSystem": "ferti-dl-raw-dev"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Month",
+				"type": "String"
+			},
+			{
+				"name": "Functional_Currency",
+				"type": "String"
+			},
+			{
+				"name": "Transactional_Currency",
+				"type": "String"
+			},
+			{
+				"name": "ACT_FX_Loans_AVG",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

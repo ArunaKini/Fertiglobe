@@ -1,0 +1,659 @@
+{
+	"name": "PL_Generic_Validation_ph2",
+	"properties": {
+		"activities": [
+			{
+				"name": "Start Validation Process",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "ActualFolderName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[FERTIL_AUDIT_FRAMEWORK].[spc_FileValidationLog]",
+					"storedProcedureParameters": {
+						"ADLS_Folder_Path": {
+							"value": {
+								"value": "@variables('ActualFolderName')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"DataCategory": {
+							"value": {
+								"value": "@variables('DataCategory')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"EndTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"Error_Message": {
+							"value": null,
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"FileName": {
+							"value": {
+								"value": "@pipeline().parameters.SourceFileName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"Master_Identifier": {
+							"value": {
+								"value": "@variables('Master_Identifier')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"Src_Rec_Count": {
+							"value": null,
+							"type": "Int32"
+						},
+						"StartTime": {
+							"value": {
+								"value": "@formatDateTime(utcNow(),'yyyy-MM-dd')",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ValidationCheckStatus": {
+							"value": "Started",
+							"type": "String"
+						},
+						"ValidationType": {
+							"value": "FileExists",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "ColumnLevelCheck",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "If Condition1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_LandingZone_Production_Mxm_EBIC_File_Ph2",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileName": {
+								"value": "@pipeline().parameters.SourceFileName",
+								"type": "Expression"
+							},
+							"DS_SourceFolder": {
+								"value": "@variables('ActualFolderName')",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"itemName",
+						"columnCount",
+						"structure"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "SRC_Rec_Count",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Start Validation RecCountCheck",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"dataset": {
+						"referenceName": "DS_LandingZone_Production_Mxm_EBIC_File_Ph2",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileName": {
+								"value": "@pipeline().parameters.SourceFileName",
+								"type": "Expression"
+							},
+							"DS_SourceFolder": {
+								"value": "@variables('ActualFolderName')",
+								"type": "Expression"
+							}
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "SRC_Rec_Count",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greaterOrEquals(activity('SRC_Rec_Count').output.count,1)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Fail3",
+							"type": "Fail",
+							"dependsOn": [
+								{
+									"activity": "ValidationFailed-RecCntCheck",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "No Records Found",
+								"errorCode": "V001"
+							}
+						},
+						{
+							"name": "ValidationFailed-RecCntCheck",
+							"type": "SqlPoolStoredProcedure",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"sqlPool": {
+								"referenceName": "synwsdb01",
+								"type": "SqlPoolReference"
+							},
+							"typeProperties": {
+								"storedProcedureName": "[FERTIL_AUDIT_FRAMEWORK].[spc_FileValidationLog]",
+								"storedProcedureParameters": {
+									"ADLS_Folder_Path": {
+										"value": {
+											"value": "@variables('ActualFolderName')",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"DataCategory": {
+										"value": {
+											"value": "@variables('DataCategory')",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"EndTime": {
+										"value": {
+											"value": "@formatDateTime(utcNow(),'yyyy-MM-dd')",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"Error_Message": {
+										"value": "Rec Count Check Failed",
+										"type": "String"
+									},
+									"ExecutionID": {
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"FileName": {
+										"value": {
+											"value": "@pipeline().parameters.SourceFileName",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"Master_Identifier": {
+										"value": {
+											"value": "@variables('Master_Identifier')",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"PipelineName": {
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"Src_Rec_Count": {
+										"value": {
+											"value": "@activity('SRC_Rec_Count').output.count",
+											"type": "Expression"
+										},
+										"type": "Int32"
+									},
+									"StartTime": {
+										"value": null,
+										"type": "DateTime"
+									},
+									"ValidationCheckStatus": {
+										"value": "Failed",
+										"type": "String"
+									},
+									"ValidationType": {
+										"value": "RecCnt",
+										"type": "String"
+									}
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "ValidationCompleted-RecCntCheck",
+							"type": "SqlPoolStoredProcedure",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"sqlPool": {
+								"referenceName": "synwsdb01",
+								"type": "SqlPoolReference"
+							},
+							"typeProperties": {
+								"storedProcedureName": "[FERTIL_AUDIT_FRAMEWORK].[spc_FileValidationLog]",
+								"storedProcedureParameters": {
+									"ADLS_Folder_Path": {
+										"value": {
+											"value": "@variables('ActualFolderName')",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"DataCategory": {
+										"value": {
+											"value": "@variables('DataCategory')",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"EndTime": {
+										"value": {
+											"value": "@formatDateTime(utcNow(),'yyyy-MM-dd')",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"Error_Message": {
+										"value": null,
+										"type": "String"
+									},
+									"ExecutionID": {
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"FileName": {
+										"value": {
+											"value": "@pipeline().parameters.SourceFileName",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"Master_Identifier": {
+										"value": {
+											"value": "@variables('Master_Identifier')",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"PipelineName": {
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"Src_Rec_Count": {
+										"value": {
+											"value": "@activity('SRC_Rec_Count').output.count",
+											"type": "Expression"
+										},
+										"type": "Int32"
+									},
+									"StartTime": {
+										"value": null,
+										"type": "DateTime"
+									},
+									"ValidationCheckStatus": {
+										"value": "Completed",
+										"type": "String"
+									},
+									"ValidationType": {
+										"value": "RecCnt",
+										"type": "String"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Start Validation RecCountCheck",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Validation FileCheck",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[FERTIL_AUDIT_FRAMEWORK].[spc_FileValidationLog]",
+					"storedProcedureParameters": {
+						"ADLS_Folder_Path": {
+							"value": {
+								"value": "@variables('ActualFolderName')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"DataCategory": {
+							"value": {
+								"value": "@variables('DataCategory')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"EndTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"Error_Message": {
+							"value": null,
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"FileName": {
+							"value": {
+								"value": "@pipeline().parameters.SourceFileName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"Master_Identifier": {
+							"value": {
+								"value": "@variables('Master_Identifier')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"Src_Rec_Count": {
+							"value": null,
+							"type": "Int32"
+						},
+						"StartTime": {
+							"value": {
+								"value": "@formatDateTime(utcNow(),'yyyy-MM-dd')",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ValidationCheckStatus": {
+							"value": "Started",
+							"type": "String"
+						},
+						"ValidationType": {
+							"value": "RecCnt",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "Validation FileCheck",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Start Validation Process",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[FERTIL_AUDIT_FRAMEWORK].[spc_FileValidationLog]",
+					"storedProcedureParameters": {
+						"ADLS_Folder_Path": {
+							"value": {
+								"value": "@variables('ActualFolderName')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"DataCategory": {
+							"value": {
+								"value": "@variables('DataCategory')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@formatDateTime(utcNow(),'yyyy-MM-dd')",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"Error_Message": {
+							"value": null,
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"FileName": {
+							"value": {
+								"value": "@pipeline().parameters.SourceFileName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"Master_Identifier": {
+							"value": {
+								"value": "@variables('Master_Identifier')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"Src_Rec_Count": {
+							"value": null,
+							"type": "Int32"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"ValidationCheckStatus": {
+							"value": "Completed",
+							"type": "String"
+						},
+						"ValidationType": {
+							"value": "FileExists",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "ActualFolderName",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ActualFolderName",
+					"value": {
+						"value": "@substring(pipeline().parameters.SourceFolderName,21,\nsub(length(pipeline().parameters.SourceFolderName),21))",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"SourceFolderName": {
+				"type": "string",
+				"defaultValue": "Production/Maximo/Fertil/2023-05-18"
+			},
+			"SourceFileName": {
+				"type": "string",
+				"defaultValue": "Fertil_Daily_Production_Report_18May2023_1207PM.xlsx"
+			}
+		},
+		"variables": {
+			"DataCategory": {
+				"type": "String",
+				"defaultValue": "Production"
+			},
+			"Master_Identifier": {
+				"type": "String",
+				"defaultValue": "RWPRD007"
+			},
+			"ActualFolderName": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-19T10:51:21Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

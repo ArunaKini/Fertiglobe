@@ -1,0 +1,188 @@
+{
+	"name": "DF_RZToCZ_Board_Production_FctProductionDetails",
+	"properties": {
+		"folder": {
+			"name": "Production"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_Prod_FctProductionDetails",
+						"type": "DatasetReference"
+					},
+					"name": "SrcProdFctProductionDetails"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_DimEntity",
+						"type": "DatasetReference"
+					},
+					"name": "SrcDimEntity"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_Synapse_Prod_Fct_Production_Details",
+						"type": "DatasetReference"
+					},
+					"name": "ProdActProdunctionDetails"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Month as integer,",
+				"          Entity as string,",
+				"          Plant as string,",
+				"          Metric as string,",
+				"          Product as string,",
+				"          {PLAN - Production Volumes} as double,",
+				"          Scenario as short,",
+				"          Version as short,",
+				"          {Plan Year} as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:['Production/Fct_Production_Details/*/FCT_PRODUCTION_DETAILS.csv']) ~> SrcProdFctProductionDetails",
+				"source(output(",
+				"          Entity as string,",
+				"          {Entity Description} as string,",
+				"          OCINVT_IFRS as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:['Finance/Entity/*/ENTITY.csv']) ~> SrcDimEntity",
+				"derivedColumn1 select(mapColumn(",
+				"          Month,",
+				"          Entity = SrcProdFctProductionDetails@Entity,",
+				"          OpCo = {Entity Description},",
+				"          Product,",
+				"          Plant,",
+				"          Metric,",
+				"          Scenario,",
+				"          Version,",
+				"          Plan_Year = {Plan Year},",
+				"          Asset_Utilization,",
+				"          Capacity_Efficiency,",
+				"          Operational_Efficiency,",
+				"          Unplanned_Shutdown_Days,",
+				"          Total_Stop_Days,",
+				"          Prod_MTPD,",
+				"          Prod_MPC,",
+				"          Planned_Other_Stop_Days,",
+				"          Planned_Turnaround_Days",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 aggregate(groupBy(Month,",
+				"          Entity,",
+				"          OpCo,",
+				"          Product,",
+				"          Plant,",
+				"          Metric,",
+				"          Scenario,",
+				"          Version,",
+				"          Plan_Year,",
+				"          Asset_Utilization,",
+				"          Capacity_Efficiency,",
+				"          Operational_Efficiency,",
+				"          Unplanned_Shutdown_Days,",
+				"          Total_Stop_Days,",
+				"          Prod_MTPD,",
+				"          Prod_MPC,",
+				"          Planned_Other_Stop_Days,",
+				"          Planned_Turnaround_Days),",
+				"     Cnt = count(1)) ~> aggregate1",
+				"SrcProdFctProductionDetails, SrcDimEntity join(SrcProdFctProductionDetails@Entity == SrcDimEntity@Entity,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 derive(Operational_Efficiency = case(Metric == 'PROD_FERT_OE',{PLAN - Production Volumes},toDouble(0)),",
+				"          Asset_Utilization = case(Metric == 'PROD_FERT_AU',{PLAN - Production Volumes},toDouble(0)),",
+				"          Capacity_Efficiency = case(Metric == 'PROD_FERT_CE',{PLAN - Production Volumes},toDouble(0)),",
+				"          Unplanned_Shutdown_Days = case(Metric == 'PROD_FERT_USD',{PLAN - Production Volumes},toDouble(0)),",
+				"          Total_Stop_Days = case(Metric == 'PROD_FERT_TOD',{PLAN - Production Volumes},toDouble(0)),",
+				"          Prod_MTPD = case(Metric == 'PROD_FERT_PR',{PLAN - Production Volumes},toDouble(0)),",
+				"          Prod_MPC = case(Metric == 'PROD_FERT_MSD',{PLAN - Production Volumes},toDouble(0)),",
+				"          Planned_Other_Stop_Days = case(Metric == 'PROD_FERT_PSD',{PLAN - Production Volumes},toDouble(0)),",
+				"          Planned_Turnaround_Days = case(Metric == 'PROD_FERT_TSD',{PLAN - Production Volumes},toDouble(0))) ~> derivedColumn1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Month as integer,",
+				"          Entity as string,",
+				"          OpCo as string,",
+				"          Product as string,",
+				"          Plant as string,",
+				"          Metric as string,",
+				"          Scenario as string,",
+				"          Version as string,",
+				"          Plan_Year as string,",
+				"          Asset_Utilization as decimal(25,3),",
+				"          Capacity_Efficiency as decimal(25,3),",
+				"          Operational_Efficiency as decimal(25,3),",
+				"          Unplanned_Shutdown_Days as decimal(25,3),",
+				"          Total_Stop_Days as decimal(25,3),",
+				"          Prod_MTPD as decimal(25,3),",
+				"          Prod_MPC as decimal(25,3),",
+				"          Planned_Other_Stop_Days as decimal(25,3),",
+				"          Planned_Turnaround_Days as decimal(25,3)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Month,",
+				"          Entity,",
+				"          OpCo,",
+				"          Product,",
+				"          Plant,",
+				"          Metric,",
+				"          Scenario,",
+				"          Version,",
+				"          Plan_Year,",
+				"          Asset_Utilization,",
+				"          Capacity_Efficiency,",
+				"          Operational_Efficiency,",
+				"          Unplanned_Shutdown_Days,",
+				"          Total_Stop_Days,",
+				"          Prod_MTPD,",
+				"          Prod_MPC,",
+				"          Planned_Other_Stop_Days,",
+				"          Planned_Turnaround_Days",
+				"     )) ~> ProdActProdunctionDetails"
+			]
+		}
+	}
+}

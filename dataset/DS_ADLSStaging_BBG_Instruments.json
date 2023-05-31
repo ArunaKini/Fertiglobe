@@ -1,0 +1,101 @@
+{
+	"name": "DS_ADLSStaging_BBG_Instruments",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSStagingZone",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"FileName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().FileName",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@concat('Bloomberg/Instruments/',formatDateTime(utcNow(),'yyyy-MM-dd'))",
+					"type": "Expression"
+				},
+				"fileSystem": "ferti-dl-raw-dev"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "DL_REQUEST_ID",
+				"type": "String"
+			},
+			{
+				"name": "DL_REQUEST_NAME",
+				"type": "String"
+			},
+			{
+				"name": "DL_SNAPSHOT_START_TIME",
+				"type": "String"
+			},
+			{
+				"name": "DL_SNAPSHOT_TZ",
+				"type": "String"
+			},
+			{
+				"name": "IDENTIFIER",
+				"type": "String"
+			},
+			{
+				"name": "RC",
+				"type": "String"
+			},
+			{
+				"name": "PX_CLOSE_1D",
+				"type": "String"
+			},
+			{
+				"name": "HIGH_52WEEK",
+				"type": "String"
+			},
+			{
+				"name": "LOW_52WEEK",
+				"type": "String"
+			},
+			{
+				"name": "PX_CLOSE_DT",
+				"type": "String"
+			},
+			{
+				"name": "LAST_UPDATE_DATE_EOD",
+				"type": "String"
+			},
+			{
+				"name": "PX_LAST_EOD",
+				"type": "String"
+			},
+			{
+				"name": "EQY_INIT_PO_SH_PX",
+				"type": "String"
+			},
+			{
+				"name": "PX_SETTLE_LAST_DT",
+				"type": "String"
+			},
+			{
+				"name": "PX_SETTLE",
+				"type": "String"
+			},
+			{
+				"name": "FAIR_VALUE",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

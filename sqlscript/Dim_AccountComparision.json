@@ -1,0 +1,17 @@
+{
+	"name": "Dim_AccountComparision",
+	"properties": {
+		"content": {
+			"query": "-- This is auto-generated code\nSELECT DISTINCT * FROM\n    OPENROWSET(\n        BULK 'https://stdlkdevuaenorth001.dfs.core.windows.net/ferti-dl-raw-dev/Finance/Account/2023-02-20/Account_Details.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0'\n    ) AS [result]\n--WHERE C1 IN ('21700031', '22500035', '40220037')\n\nEXCEPT\n\nSELECT DISTINCT * FROM\n    OPENROWSET(\n        BULK 'https://stdlkdevuaenorth001.dfs.core.windows.net/ferti-dl-raw-dev/Finance/Account/2022-11-24/Account_Details.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0'\n    ) AS [result]\n--WHERE C1 IN ('21700031', '22500035', '40220037')\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": -1
+		},
+		"type": "SqlQuery"
+	}
+}

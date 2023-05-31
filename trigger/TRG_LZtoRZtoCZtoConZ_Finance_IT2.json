@@ -1,0 +1,25 @@
+{
+	"name": "TRG_LZtoRZtoCZtoConZ_Finance_IT2",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PL_CZToConsZ_Finance_IT2",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/ferti-dl-landing-dev/blobs/Finance/IT2",
+			"blobPathEndsWith": "Fertiglobe - Net Debt Consolidated USD.csv",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/7133dcb0-ac3b-441f-84f4-a8229f4a87e0/resourceGroups/rg-dlk-dev-001/providers/Microsoft.Storage/storageAccounts/stdlkdevuaenorth001",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

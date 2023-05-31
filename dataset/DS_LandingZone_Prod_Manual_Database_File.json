@@ -1,0 +1,23 @@
+{
+	"name": "DS_LandingZone_Prod_Manual_Database_File",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSStagingZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Production database_Katherine .xlsx",
+				"folderPath": "Production/Manual_File",
+				"fileSystem": "ferti-dl-landing-dev"
+			},
+			"sheetIndex": 0,
+			"firstRowAsHeader": true
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

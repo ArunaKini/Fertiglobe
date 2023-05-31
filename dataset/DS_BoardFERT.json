@@ -1,0 +1,13 @@
+{
+	"name": "DS_BoardFERT",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_BoardFERT",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

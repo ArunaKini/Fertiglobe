@@ -1,0 +1,354 @@
+{
+	"name": "PL_RZToCZ_Board_Finance_FctSalesVolumePL_RZToCZ_Board_Finance_FctSalesVolumeNetBackPrice",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_RZToCZ_Board_Finance_FctSalesVolumeNetbackPrice",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "spc_ExecutionLogEntry_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_RZToCZ_Board_Finance_FctSalesVolumePL_RZToCZ_Board_Finance_FctSalesVolumeNetBackPrice",
+						"type": "DataFlowReference"
+					},
+					"staging": {
+						"linkedService": {
+							"referenceName": "LS_ADLSRawZone",
+							"type": "LinkedServiceReference"
+						},
+						"folderPath": "ferti-dl-raw-dev/SynapseInternal"
+					},
+					"integrationRuntime": {
+						"referenceName": "IntegrationRuntime1",
+						"type": "IntegrationRuntimeReference"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_Start",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Set DataRefreshDate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "RawToConformed",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Started",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": {
+								"value": "@variables('DataRefreshDate')",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": null,
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": null,
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "Finance",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "Script-GetDataRefreshDate",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"DBName": "synwsdb01"
+					}
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "SELECT MAX([DataRefreshDate]) AS [DataRefreshDate] FROM [consumption].[ExecutionLog] \nWHERE [PipelineName] IN ('PL_SrcToRaw_Board_Finance_FctSalesPriceDetailed','PL_SrcToRaw_Board_Finance_FctSalesVolume')"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "Set DataRefreshDate",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Script-GetDataRefreshDate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "DataRefreshDate",
+					"value": {
+						"value": "@activity('Script-GetDataRefreshDate').output.resultSets[0].rows[0].DataRefreshDate",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_End",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "DF_RZToCZ_Board_Finance_FctSalesVolumeNetbackPrice",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "RawToConformed",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Completed",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": {
+								"value": "@variables('DataRefreshDate')",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@convertToUtc(utcNow(),'UTC')",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": null,
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": null,
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "Finance",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_Error_copy1_copy1",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "DF_RZToCZ_Board_Finance_FctSalesVolumeNetbackPrice",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "RawToConformed",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Error",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": {
+								"value": "@variables('DataRefreshDate')",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": {
+								"value": "@activity('DF_RZToCZ_Board_Finance_FctSalesVolumeNetbackPrice').Error.errorCode",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": {
+								"value": "@activity('DF_RZToCZ_Board_Finance_FctSalesVolumeNetbackPrice').Error.message",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "Finance",
+							"type": "String"
+						}
+					}
+				}
+			}
+		],
+		"variables": {
+			"DataRefreshDate": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Finance/RawToConformed"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-26T07:18:41Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

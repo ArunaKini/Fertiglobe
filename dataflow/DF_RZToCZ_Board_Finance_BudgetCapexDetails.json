@@ -1,0 +1,184 @@
+{
+	"name": "DF_RZToCZ_Board_Finance_BudgetCapexDetails",
+	"properties": {
+		"folder": {
+			"name": "Finance/RawToConformed"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_FctCapexCash",
+						"type": "DatasetReference"
+					},
+					"name": "SrcRawFctCapexCash"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_DimProject",
+						"type": "DatasetReference"
+					},
+					"name": "SrcRawDimProject"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_DimEntity",
+						"type": "DatasetReference"
+					},
+					"name": "SrcRawDimEntity"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_Synapse_Budget_Capex_Details",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "JoinFctCapexCashWithDIMPROJECT"
+				},
+				{
+					"name": "JoinFctCapexCashWithEntity"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     Scenario as integer,",
+				"     Version as integer",
+				"}",
+				"source(output(",
+				"          Month as integer,",
+				"          Entity as string,",
+				"          Scenario as integer,",
+				"          {Plan Year} as short,",
+				"          {Project Sub-type} as string,",
+				"          Version as integer,",
+				"          {PLAN - CAPEX Cash - Project Sub-type} as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays( currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:['Finance/Fct_Capex_Cash/*/FCT_CAPEX_CASH.csv']) ~> SrcRawFctCapexCash",
+				"source(output(",
+				"          Project as string,",
+				"          {Project Description} as string,",
+				"          {Project Type} as string,",
+				"          {Project Type Description} as string,",
+				"          {Project SubType} as string,",
+				"          {Project Category} as string,",
+				"          {Project SubType Description} as string,",
+				"          {Project Category Description} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:['Finance/Project/*/PROJECT.csv']) ~> SrcRawDimProject",
+				"source(output(",
+				"          Entity as string,",
+				"          {Entity Description} as string,",
+				"          OCINVT_IFRS as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:['Finance/Entity/*/ENTITY.csv']) ~> SrcRawDimEntity",
+				"SrcRawFctCapexCash, SrcRawDimProject join({Project Sub-type} == {Project SubType},",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> JoinFctCapexCashWithDIMPROJECT",
+				"JoinFctCapexCashWithDIMPROJECT, SrcRawDimEntity join(SrcRawFctCapexCash@Entity == SrcRawDimEntity@Entity,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> JoinFctCapexCashWithEntity",
+				"filter1 select(mapColumn(",
+				"          Month,",
+				"          Entity = SrcRawDimEntity@Entity,",
+				"          Entity_Description = {Entity Description},",
+				"          RF = Scenario,",
+				"          Version,",
+				"          Plan_Year = {Plan Year},",
+				"          Project_Type = {Project Type},",
+				"          Project_Type_Description = {Project Type Description},",
+				"          Project_SubType = {Project SubType},",
+				"          Project_SubType_Description = {Project SubType Description},",
+				"          Budget_CAPEX_Cash = {PLAN - CAPEX Cash - Project Sub-type}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 aggregate(groupBy(Month,",
+				"          Entity,",
+				"          Entity_Description,",
+				"          RF,",
+				"          Version,",
+				"          Plan_Year,",
+				"          Project_Type,",
+				"          Project_Type_Description,",
+				"          Project_SubType,",
+				"          Project_SubType_Description,",
+				"          Budget_CAPEX_Cash),",
+				"     RowCnt = count(1)) ~> aggregate1",
+				"JoinFctCapexCashWithEntity filter(Version == $Version && Scenario == $Scenario) ~> filter1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Month as integer,",
+				"          Entity as string,",
+				"          Entity_Description as string,",
+				"          RF as integer,",
+				"          Version as integer,",
+				"          Plan_Year as integer,",
+				"          Project_Type as string,",
+				"          Project_Type_Description as string,",
+				"          Project_SubType as string,",
+				"          Project_SubType_Description as string,",
+				"          Budget_Capex_Cash as decimal(38,3)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Month,",
+				"          Entity,",
+				"          Entity_Description,",
+				"          RF,",
+				"          Version,",
+				"          Plan_Year,",
+				"          Project_Type,",
+				"          Project_Type_Description,",
+				"          Project_SubType,",
+				"          Project_SubType_Description,",
+				"          Budget_Capex_Cash = Budget_CAPEX_Cash",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

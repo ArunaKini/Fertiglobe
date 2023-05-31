@@ -1,0 +1,52 @@
+{
+	"name": "DS_Snk_Synapse_FCTAverageFxRates",
+	"properties": {
+		"annotations": [],
+		"type": "SqlPoolTable",
+		"schema": [
+			{
+				"name": "Month",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Scenario",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Version",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Plan_Year",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Functional_Currency",
+				"type": "varchar"
+			},
+			{
+				"name": "Transactional_Currency",
+				"type": "varchar"
+			},
+			{
+				"name": "ADM_FX_Loans_AVG",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 20
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "FCT_AVERAGE_FX_RATES"
+		},
+		"sqlPool": {
+			"referenceName": "synwsdb01",
+			"type": "SqlPoolReference"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

@@ -1,0 +1,36 @@
+{
+	"name": "DS_LandingZone_Finance_Manual_StockHourly",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSStagingZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Stock.xlsx",
+				"folderPath": "Finance/FutureManualExtracts",
+				"fileSystem": "ferti-dl-landing-dev"
+			},
+			"sheetIndex": 0,
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Company",
+				"type": "String"
+			},
+			{
+				"name": "ValueDate",
+				"type": "String"
+			},
+			{
+				"name": "Stock Value",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

@@ -1,0 +1,663 @@
+{
+	"name": "PL_Manual_Executive_WANetbackBenchmarkPrices",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_SrcToRZ_Manual_Executive_WANetbackBenchmarkPrices",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "spc_ExecutionLogEntry_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_SrcToRZ_Manual_Executive_WANetbackBenchmarkPrices",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sink1": {
+								"FolderName": "ManualExtracts",
+								"FileName": "WANetbackBenchmarkPrices",
+								"MainFolderName": "Executive"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DF_RZToCZ_Executive_Manual_WANetbackBenchmarkPrices",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "DF_SrcToRZ_Manual_Executive_WANetbackBenchmarkPrices",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_RZToCZ_Executive_Manual_WANetbackBenchmarkPrices",
+						"type": "DataFlowReference"
+					},
+					"staging": {
+						"linkedService": {
+							"referenceName": "LS_ADLSRawZone",
+							"type": "LinkedServiceReference"
+						},
+						"folderPath": "ferti-dl-raw-dev/SynapseInternal"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "spc_LoadExecWANetbackBenchmarkPrices",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "DF_RZToCZ_Executive_Manual_WANetbackBenchmarkPrices",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_LoadExecWANetbackBenchmarkPrices]"
+				}
+			},
+			{
+				"name": "CD_Archive_Executive_Manual_ExecWANetbackBenchPrices",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "spc_LoadExecWANetbackBenchmarkPrices",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_LandingZone_Executive_Manual_WANetbackBenchmarkPrices",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_LandingZone_Executive_Manual_Archive_WANetbackBenchmarkPrices",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "spc_ExecutionLogEntry_Start",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "ManualExtractsLoad",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Started",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": null,
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": null,
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "Executive",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_End",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "CD_Archive_Executive_Manual_ExecWANetbackBenchPrices",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "ManualExtractsLoad",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Completed",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@convertToUtc(utcNow(),'UTC')",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": null,
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": null,
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "Executive",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_Error_SrcToRZ",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "DF_SrcToRZ_Manual_Executive_WANetbackBenchmarkPrices",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "ManualExtractsLoad",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Error",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": {
+								"value": "@activity('DF_SrcToRZ_Manual_Executive_WANetbackBenchmarkPrices').Error.errorCode",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": {
+								"value": "@activity('DF_SrcToRZ_Manual_Executive_WANetbackBenchmarkPrices').Error.message",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "Executive",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_Error_SrcToRZ_copy1",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "DF_RZToCZ_Executive_Manual_WANetbackBenchmarkPrices",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "ManualExtractsLoad",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Error",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": {
+								"value": "@activity('DF_RZToCZ_Executive_Manual_WANetbackBenchmarkPrices').Error.errorCode",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": {
+								"value": "@activity('DF_RZToCZ_Executive_Manual_WANetbackBenchmarkPrices').Error.message",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "Executive",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_Error_SrcToRZ_copy1_copy1",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "spc_LoadExecWANetbackBenchmarkPrices",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "ManualExtractsLoad",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Error",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": {
+								"value": "@activity('spc_LoadExecWANetbackBenchmarkPrices').Error.errorCode",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": {
+								"value": "@activity('spc_LoadExecWANetbackBenchmarkPrices').Error.message",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "Executive",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_Error_SrcToRZ_copy1_copy1_copy1",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "CD_Archive_Executive_Manual_ExecWANetbackBenchPrices",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "ManualExtractsLoad",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Error",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": {
+								"value": "@activity('CD_Archive_Executive_Manual_ExecWANetbackBenchPrices').Error.errorCode",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": {
+								"value": "@activity('CD_Archive_Executive_Manual_ExecWANetbackBenchPrices').Error.message",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "Executive",
+							"type": "String"
+						}
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "Executive/ManualExtracts"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-03-07T11:37:48Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

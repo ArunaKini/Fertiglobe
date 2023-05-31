@@ -1,0 +1,68 @@
+{
+	"name": "DS_LandingZone_Executive_Manual_ExecAnalystCovConsensus",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSStagingZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Consensus",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "IBM - Analyst_Coverage  Consensus.xlsx",
+				"folderPath": "Executive/ManualExtracts",
+				"fileSystem": "ferti-dl-landing-dev"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Analyst",
+				"type": "String"
+			},
+			{
+				"name": "Latest Publication ",
+				"type": "String"
+			},
+			{
+				"name": "Rec",
+				"type": "String"
+			},
+			{
+				"name": "Target Price",
+				"type": "String"
+			},
+			{
+				"name": "Upside/Downside",
+				"type": "String"
+			},
+			{
+				"name": "Adj.EBITDA (Current Year)",
+				"type": "String"
+			},
+			{
+				"name": "Adj.EBITDA (Next Year)",
+				"type": "String"
+			},
+			{
+				"name": "Net income (Current Year)",
+				"type": "String"
+			},
+			{
+				"name": "Net income (Next Year)",
+				"type": "String"
+			},
+			{
+				"name": "Div Val(m$) (Current Year) ",
+				"type": "String"
+			},
+			{
+				"name": "Div Val(m$) (Next Year) ",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

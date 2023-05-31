@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 1",
+	"properties": {
+		"content": {
+			"query": "/*\n\nIF NOT EXISTS (SELECT * FROM sys.objects O JOIN sys.schemas S ON O.schema_id = S.schema_id WHERE O.NAME = 'Capex_Details' AND O.TYPE = 'U' AND S.NAME = 'dbo')\nCREATE TABLE dbo.Capex_Details\n    (\n     [MONTH] VARCHAR(100),\n     [Entity] VARCHAR(100),\n     [Project Sub-type] VARCHAR(100),\n     [ACT - CAPEX Cash] VARCHAR(100)  \n    )\nWITH\n    (\n    DISTRIBUTION = ROUND_ROBIN,\n    HEAP\n    )\nGO\n*/\n\nDECLARE @acctName NVARCHAR(128) = 'stdlkdevuaenorth001'\ndeclare @sql nvarchar(max)\n\nset @sql = 'COPY INTO dbo.Capex_Details\n([MONTH] 1, [Entity] 2, [Project Sub-type] 3, [ACT - CAPEX Cash] 4)\nFROM ''https://'+ @acctName +'.blob.core.windows.net/ferti-dl-raw-dev/Finance/Capex_Cash/2022-10-10/ACT_CAPEX_CASH.csv''\nWITH\n(\n    FILE_TYPE = ''CSV''\n    ,MAXERRORS = 0\n    ,IDENTITY_INSERT = ''OFF''\n    ,CREDENTIAL = (IDENTITY = ''Managed Identity'')\n)'\n--select @sql\nEXEC sp_executesql @sql\n\ndrop table dbo.Capex_Details\nselect * from dbo.Capex_Details\n\n\n\n\n\n\n\n\n\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "synwsdb01",
+				"poolName": "synwsdb01"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,31 @@
+{
+	"name": "DS_Snk_Synapse_FctAvailableCash",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "ValueDate",
+				"type": "date"
+			},
+			{
+				"name": "Cash",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 20
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Future_Fct_Available_Cash"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

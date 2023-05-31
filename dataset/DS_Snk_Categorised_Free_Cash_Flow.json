@@ -1,0 +1,44 @@
+{
+	"name": "DS_Snk_Categorised_Free_Cash_Flow",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "Year",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Quarter",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ValueType",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Cash_Value",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "Opco",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Categorised_Free_Cash_Flow"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

@@ -1,0 +1,97 @@
+{
+	"name": "DS_Src_RawZone_ConsolidatedCash",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSRawZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat(formatDateTime(utcNow(),'yyyy-MM-dd'),'/Consolidated_Cash.csv')",
+					"type": "Expression"
+				},
+				"folderPath": "Finance/Consolidated_Cash",
+				"fileSystem": "ferti-dl-raw-dev"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Grouping",
+				"type": "String"
+			},
+			{
+				"name": "Cash Type",
+				"type": "String"
+			},
+			{
+				"name": "Company Sector",
+				"type": "String"
+			},
+			{
+				"name": "Company",
+				"type": "String"
+			},
+			{
+				"name": "Bank",
+				"type": "String"
+			},
+			{
+				"name": "AccountNumber",
+				"type": "String"
+			},
+			{
+				"name": "All (USD)",
+				"type": "String"
+			},
+			{
+				"name": "All (USD)(Prev)",
+				"type": "String"
+			},
+			{
+				"name": "Delta All (USD)",
+				"type": "String"
+			},
+			{
+				"name": "USD (CCY)",
+				"type": "String"
+			},
+			{
+				"name": "EUR (CCY)",
+				"type": "String"
+			},
+			{
+				"name": "EGP (CCY)",
+				"type": "String"
+			},
+			{
+				"name": "GBP (CCY)",
+				"type": "String"
+			},
+			{
+				"name": "DZD (CCY)",
+				"type": "String"
+			},
+			{
+				"name": "JPY (CCY)",
+				"type": "String"
+			},
+			{
+				"name": "AED (CCY)",
+				"type": "String"
+			},
+			{
+				"name": "CNY (CCY)",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

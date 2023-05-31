@@ -1,0 +1,41 @@
+{
+	"name": "PL_DATA_RZToCZ_Finance_Act_FinanceDetails_FGTrading",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_RZToCZ_Finance_Act_FinanceDetails_Conso",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_RZToCZ_Board_Finance_ActFinanceDetails_Consolidated",
+						"type": "DataFlowReference"
+					},
+					"staging": {
+						"linkedService": {
+							"referenceName": "LS_ADLSRawZone",
+							"type": "LinkedServiceReference"
+						},
+						"folderPath": "ferti-dl-raw-dev/SynapseInternal"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2022-11-24T13:35:28Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

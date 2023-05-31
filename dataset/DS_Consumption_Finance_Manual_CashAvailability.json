@@ -1,0 +1,30 @@
+{
+	"name": "DS_Consumption_Finance_Manual_CashAvailability",
+	"properties": {
+		"annotations": [],
+		"type": "SqlPoolTable",
+		"schema": [
+			{
+				"name": "ValueDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "Cash",
+				"type": "decimal",
+				"precision": 17,
+				"scale": 15
+			}
+		],
+		"typeProperties": {
+			"schema": "consumption",
+			"table": "Cash_Availability"
+		},
+		"sqlPool": {
+			"referenceName": "synwsdb01",
+			"type": "SqlPoolReference"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

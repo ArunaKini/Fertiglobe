@@ -1,0 +1,78 @@
+{
+	"name": "DF_RZToCZ_Board_Finance_ActAverageFxRates",
+	"properties": {
+		"folder": {
+			"name": "Finance/RawToConformed"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_ActAverageFxRates",
+						"type": "DatasetReference"
+					},
+					"name": "SrcActAverageFXRates"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_Synapse_ACTAverageFxRates_1",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Month as integer,",
+				"          Functional_Currency as string,",
+				"          Transactional_Currency as string,",
+				"          ACT_FX_Loans_AVG as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:['Finance/ACT_AVERAGE_FX_RATES/*/Act_Average_Fx_Rates.csv']) ~> SrcActAverageFXRates",
+				"SrcActAverageFXRates aggregate(groupBy(Month,",
+				"          Functional_Currency,",
+				"          Transactional_Currency,",
+				"          ACT_FX_Loans_AVG),",
+				"     Cnt = count(1)) ~> aggregate1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Month as integer,",
+				"          Functional_Currency as string,",
+				"          Transactional_Currency as string,",
+				"          ACT_FX_Loans_AVG as decimal(38,20)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Month,",
+				"          Functional_Currency,",
+				"          Transactional_Currency,",
+				"          ACT_FX_Loans_AVG",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

@@ -1,0 +1,75 @@
+{
+	"name": "DS_Snk_Synapse_Net_Debt_Consolidated_12",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "KPIDate",
+				"type": "date"
+			},
+			{
+				"name": "Company",
+				"type": "varchar"
+			},
+			{
+				"name": "Nebt_Debt_Group",
+				"type": "varchar"
+			},
+			{
+				"name": "Nebt_Debt_Category",
+				"type": "varchar"
+			},
+			{
+				"name": "TranType",
+				"type": "varchar"
+			},
+			{
+				"name": "Total_Net_Debt_USD",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 3
+			},
+			{
+				"name": "Cash",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 3
+			},
+			{
+				"name": "Deferred_Costs",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 3
+			},
+			{
+				"name": "Short_Term_Debt",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 3
+			},
+			{
+				"name": "Long_Term_Debt",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 3
+			},
+			{
+				"name": "FlowDate",
+				"type": "date"
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Net_Debt_Consolidated"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

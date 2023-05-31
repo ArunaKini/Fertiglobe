@@ -1,0 +1,23 @@
+{
+	"name": "Test1_SrcToRaw",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute Pipeline1",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_SrcToRaw_Board_Finance_Daily",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2022-12-22T06:01:22Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

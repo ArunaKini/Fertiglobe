@@ -1,0 +1,48 @@
+{
+	"name": "DS_LandingZone_Finance_Manual_CostOfBorrowing",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSStagingZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet1",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Cost Of Borrowing.xlsx",
+				"folderPath": "Finance/ManualExtracts",
+				"fileSystem": "ferti-dl-landing-dev"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Date",
+				"type": "String"
+			},
+			{
+				"name": "SOFR-TSFR1M ",
+				"type": "String"
+			},
+			{
+				"name": "3 YTY-USGG3YR ",
+				"type": "String"
+			},
+			{
+				"name": "5 YTY-USGG5YR ",
+				"type": "String"
+			},
+			{
+				"name": "7 YTY-USGG7YR ",
+				"type": "String"
+			},
+			{
+				"name": "CoB",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

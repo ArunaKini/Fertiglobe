@@ -1,0 +1,107 @@
+{
+	"name": "DF_RZToCZ_Production_GroupSummary_copy1",
+	"properties": {
+		"folder": {
+			"name": "Production"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_Prod_GroupSummary",
+						"type": "DatasetReference"
+					},
+					"name": "SrcRawZoneGroupSummary"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_Synapse_Prod_Group_Summary_copy1",
+						"type": "DatasetReference"
+					},
+					"name": "ConformedGroupSummary"
+				}
+			],
+			"transformations": [
+				{
+					"name": "unpivot1"
+				},
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Description as string,",
+				"          Unit as string,",
+				"          {EBIC Ammonia} as string,",
+				"          {EFC Ammonia 1} as string,",
+				"          {EFC Ammonia 2} as string,",
+				"          {EFC Urea 1} as string,",
+				"          {EFC Urea 2} as string,",
+				"          {Fertil Ammonia 1} as string,",
+				"          {Fertil Ammonia 2} as string,",
+				"          {Fertil Urea 1} as string,",
+				"          {Fertil Urea 2} as string,",
+				"          {Sorfert Ammonia 1} as string,",
+				"          {Sorfert Ammonia 2} as string,",
+				"          {Sorfert Urea} as string,",
+				"          Total as string,",
+				"          Year as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:['Production/Group_Summary/*/GROUP_SUMMARY.csv']) ~> SrcRawZoneGroupSummary",
+				"filter1 unpivot(output(",
+				"          Plant as string,",
+				"          {EBIC Ammonia} as string,",
+				"          {EFC Ammonia 1} as string,",
+				"          {EFC Ammonia 2} as string,",
+				"          {EFC Urea 1} as string,",
+				"          {EFC Urea 2} as string,",
+				"          {Fertil Ammonia 1} as string,",
+				"          {Fertil Ammonia 2} as string,",
+				"          {Fertil Urea 1} as string,",
+				"          {Fertil Urea 2} as string,",
+				"          {Sorfert Ammonia 1} as string,",
+				"          {Sorfert Ammonia 2} as string,",
+				"          {Sorfert Urea} as string",
+				"     ),",
+				"     ungroupBy(Description,",
+				"          Unit,",
+				"          Year),",
+				"     lateral: true,",
+				"     ignoreNullPivots: false) ~> unpivot1",
+				"SrcRawZoneGroupSummary filter(Description == 'Production') ~> filter1",
+				"unpivot1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Year as string,",
+				"          Plant as string,",
+				"          Energy_efficiency_ammonia as decimal(25,18),",
+				"          GHG_per_ton_of_ammonia_produced as decimal(25,18)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Description = Year,",
+				"          Plant",
+				"     )) ~> ConformedGroupSummary"
+			]
+		}
+	}
+}

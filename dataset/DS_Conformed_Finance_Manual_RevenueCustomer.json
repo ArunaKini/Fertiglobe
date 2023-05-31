@@ -1,0 +1,42 @@
+{
+	"name": "DS_Conformed_Finance_Manual_RevenueCustomer",
+	"properties": {
+		"annotations": [],
+		"type": "SqlPoolTable",
+		"schema": [
+			{
+				"name": "Customer",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Revenue",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Price_per_Ton",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Benchmark_Price_per_Ton",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Volume",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Revenue_Customer"
+		},
+		"sqlPool": {
+			"referenceName": "synwsdb01",
+			"type": "SqlPoolReference"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

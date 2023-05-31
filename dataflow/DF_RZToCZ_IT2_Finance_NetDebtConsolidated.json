@@ -1,0 +1,146 @@
+{
+	"name": "DF_RZToCZ_IT2_Finance_NetDebtConsolidated",
+	"properties": {
+		"folder": {
+			"name": "Finance/RawToConformed"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_ADLSRaw_Net_Debt_Consolidated",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_Synapse_Net_Debt_Consolidated_12",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "aggregate1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {As Of} as string,",
+				"          Formula as string,",
+				"          {Company(Deal)} as string,",
+				"          {Nebt Debt Grouping} as string,",
+				"          {Nebt Debt Category} as string,",
+				"          TranType5 as string,",
+				"          {Total Net Debt (USD)} as string,",
+				"          Cash as string,",
+				"          {Deferred Costs} as string,",
+				"          {Short Term Debt} as string,",
+				"          {Long Term Debt} as string,",
+				"          Account as string,",
+				"          TranType12 as string,",
+				"          FlowClass as string,",
+				"          Company as string,",
+				"          {Cpty(Deal)} as string,",
+				"          TranRef as string,",
+				"          Facility as string,",
+				"          Currency as string,",
+				"          FlowDate as string,",
+				"          InterestRate as string,",
+				"          CurrentInterestRate as string,",
+				"          CurrentSpread as string,",
+				"          {Days to Deal Maturity} as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:[(concat('Finance/Net Debt Consolidated/', toString(currentUTC(),'yyyy-MM-dd'),'/Net Debt Consolidated.csv'))]) ~> source1",
+				"source1 derive(KPIDate = toDate({As Of},'dd/MM/yyyy'),",
+				"          {Total Net Debt (USD)} = toDecimal(replace({Total Net Debt (USD)},',',''),17,2),",
+				"          Cash = toDecimal(replace(Cash, ',', ''),17,2),",
+				"          {Deferred Costs} = toDecimal(replace({Deferred Costs}, ',', ''),17,2),",
+				"          {Short Term Debt} = toDecimal(replace({Short Term Debt}, ',', ''),17,2),",
+				"          {Long Term Debt} = toDecimal(replace({Long Term Debt}, ',', ''),17,2),",
+				"          FlowDate1 = toDate(FlowDate,'dd/MM/yyyy')) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          KPIDate,",
+				"          Company = {Company(Deal)},",
+				"          Nebt_Debt_Group = {Nebt Debt Grouping},",
+				"          Nebt_Debt_Category = {Nebt Debt Category},",
+				"          TranType = TranType5,",
+				"          Total_Net_Debt_USD = {Total Net Debt (USD)},",
+				"          Cash,",
+				"          Deferred_Costs = {Deferred Costs},",
+				"          Short_Term_Debt = {Short Term Debt},",
+				"          Long_Term_Debt = {Long Term Debt},",
+				"          FlowDate = FlowDate1",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 aggregate(groupBy(KPIDate,",
+				"          Company,",
+				"          Nebt_Debt_Group,",
+				"          Nebt_Debt_Category,",
+				"          TranType,",
+				"          Total_Net_Debt_USD,",
+				"          Cash,",
+				"          Deferred_Costs,",
+				"          Short_Term_Debt,",
+				"          Long_Term_Debt,",
+				"          FlowDate),",
+				"     Cnt = count(1)) ~> aggregate1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          KPIDate as date,",
+				"          Company as string,",
+				"          Nebt_Debt_Group as string,",
+				"          Nebt_Debt_Category as string,",
+				"          TranType as string,",
+				"          Total_Net_Debt_USD as decimal(38,3),",
+				"          Cash as decimal(38,3),",
+				"          Deferred_Costs as decimal(38,3),",
+				"          Short_Term_Debt as decimal(38,3),",
+				"          Long_Term_Debt as decimal(38,3),",
+				"          FlowDate as date",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          KPIDate,",
+				"          Company,",
+				"          Nebt_Debt_Group,",
+				"          Nebt_Debt_Category,",
+				"          TranType,",
+				"          Total_Net_Debt_USD,",
+				"          Cash,",
+				"          Deferred_Costs,",
+				"          Short_Term_Debt,",
+				"          Long_Term_Debt,",
+				"          FlowDate",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

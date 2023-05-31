@@ -1,0 +1,122 @@
+{
+	"name": "DS_Src_RawZone_NetDebtConsolidated",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSRawZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Net Debt Consolidated.csv",
+				"folderPath": "Finance/Net Debt Consolidated/2022-11-11",
+				"fileSystem": "ferti-dl-raw-dev"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "As Of",
+				"type": "String"
+			},
+			{
+				"name": "Formula",
+				"type": "String"
+			},
+			{
+				"name": "Company(Deal)",
+				"type": "String"
+			},
+			{
+				"name": "Nebt Debt Grouping",
+				"type": "String"
+			},
+			{
+				"name": "Nebt Debt Category",
+				"type": "String"
+			},
+			{
+				"name": "TranType5",
+				"type": "String"
+			},
+			{
+				"name": "Total Net Debt (USD)",
+				"type": "String"
+			},
+			{
+				"name": "Cash",
+				"type": "String"
+			},
+			{
+				"name": "Deferred Costs",
+				"type": "String"
+			},
+			{
+				"name": "Short Term Debt",
+				"type": "String"
+			},
+			{
+				"name": "Long Term Debt",
+				"type": "String"
+			},
+			{
+				"name": "Account",
+				"type": "String"
+			},
+			{
+				"name": "TranType12",
+				"type": "String"
+			},
+			{
+				"name": "FlowClass",
+				"type": "String"
+			},
+			{
+				"name": "Company",
+				"type": "String"
+			},
+			{
+				"name": "Cpty(Deal)",
+				"type": "String"
+			},
+			{
+				"name": "TranRef",
+				"type": "String"
+			},
+			{
+				"name": "Facility",
+				"type": "String"
+			},
+			{
+				"name": "Currency",
+				"type": "String"
+			},
+			{
+				"name": "FlowDate",
+				"type": "String"
+			},
+			{
+				"name": "InterestRate",
+				"type": "String"
+			},
+			{
+				"name": "CurrentInterestRate",
+				"type": "String"
+			},
+			{
+				"name": "CurrentSpread",
+				"type": "String"
+			},
+			{
+				"name": "Days to Deal Maturity",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

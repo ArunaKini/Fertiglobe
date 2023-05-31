@@ -1,0 +1,45 @@
+{
+	"name": "DS_LandingZone_Finance_Manual_CategorisedFreeCashFlow",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSRawZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "FCF and net debt EBITDA RF_05.xlsx",
+				"folderPath": "Finance/ManualExtracts",
+				"fileSystem": "ferti-dl-landing-dev"
+			},
+			"sheetIndex": 0,
+			"range": "A3",
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Year",
+				"type": "String"
+			},
+			{
+				"name": "Quarter",
+				"type": "String"
+			},
+			{
+				"name": "ValueType",
+				"type": "String"
+			},
+			{
+				"name": "Free_Cash_Flow",
+				"type": "String"
+			},
+			{
+				"name": "Opco",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

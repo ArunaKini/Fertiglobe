@@ -1,0 +1,49 @@
+{
+	"name": "DF_SrcToRZ_Manual_Executive_WANetbackBenchmarkPrices",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_LandingZone_Executive_Manual_WANetbackBenchmarkPrices",
+						"type": "DatasetReference"
+					},
+					"name": "SrcLandingWANetbackBenchmarkPrices"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_ADLSRawZone",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          Month as string,",
+				"          Year as string,",
+				"          {Product } as string,",
+				"          ValueType as string,",
+				"          {WA Netbacks} as string,",
+				"          Benchmark as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SrcLandingWANetbackBenchmarkPrices",
+				"SrcLandingWANetbackBenchmarkPrices sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['WANetbackBenchmarkPrices.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}

@@ -1,0 +1,127 @@
+{
+	"name": "DS_ConformedZone_Production_Manual_EHS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "OpCo",
+				"type": "varchar"
+			},
+			{
+				"name": "KPIDate",
+				"type": "date"
+			},
+			{
+				"name": "ValueType",
+				"type": "varchar"
+			},
+			{
+				"name": "Site",
+				"type": "varchar"
+			},
+			{
+				"name": "Fatalities",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "Restricted_work_cases",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "Medical_Treatment",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "Lost_time_injuries",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "TRIR",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "LTIR",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "PSI",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "PSIR",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "EI",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "EIR",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "Scope_1",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "Scope_2",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "Scope_3",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "Offset",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "GHG_Reduction",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Prod_HSE_Data"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

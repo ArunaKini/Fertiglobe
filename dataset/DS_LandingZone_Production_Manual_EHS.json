@@ -1,0 +1,103 @@
+{
+	"name": "DS_LandingZone_Production_Manual_EHS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSStagingZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat(formatDateTime(utcNow(),'yyyy-MM-dd'),'/EHS Template.xlsx')",
+					"type": "Expression"
+				},
+				"folderPath": "Production/Manual_File",
+				"fileSystem": "ferti-dl-landing-dev"
+			},
+			"sheetIndex": 0,
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "OpCo",
+				"type": "String"
+			},
+			{
+				"name": "KPIDate",
+				"type": "String"
+			},
+			{
+				"name": "ValueType",
+				"type": "String"
+			},
+			{
+				"name": "Site",
+				"type": "String"
+			},
+			{
+				"name": "Fatalities",
+				"type": "String"
+			},
+			{
+				"name": "Restricted_work_cases",
+				"type": "String"
+			},
+			{
+				"name": "Medical_Treatment",
+				"type": "String"
+			},
+			{
+				"name": "Lost_time_injuries",
+				"type": "String"
+			},
+			{
+				"name": "TRIR",
+				"type": "String"
+			},
+			{
+				"name": "LTIR",
+				"type": "String"
+			},
+			{
+				"name": "PSI",
+				"type": "String"
+			},
+			{
+				"name": "PSIR",
+				"type": "String"
+			},
+			{
+				"name": "EI",
+				"type": "String"
+			},
+			{
+				"name": "EIR",
+				"type": "String"
+			},
+			{
+				"name": "Scope 1",
+				"type": "String"
+			},
+			{
+				"name": "Scope 2",
+				"type": "String"
+			},
+			{
+				"name": "Scope 3",
+				"type": "String"
+			},
+			{
+				"name": "Offset",
+				"type": "String"
+			},
+			{
+				"name": "GHG_Reduction",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

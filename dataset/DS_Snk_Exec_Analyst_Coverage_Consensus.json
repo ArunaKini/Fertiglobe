@@ -1,0 +1,81 @@
+{
+	"name": "DS_Snk_Exec_Analyst_Coverage_Consensus",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "Analyst",
+				"type": "nvarchar"
+			},
+			{
+				"name": "LatestPublication",
+				"type": "date"
+			},
+			{
+				"name": "Rec",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TargetPrice",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 2
+			},
+			{
+				"name": "UpsideDownside",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 2
+			},
+			{
+				"name": "AdjEBITDACurrentYear",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 2
+			},
+			{
+				"name": "AdjEBITDANextYear",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 2
+			},
+			{
+				"name": "NetIncomeCurrentYear",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 2
+			},
+			{
+				"name": "NetIncomeNextYear",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 2
+			},
+			{
+				"name": "DivValueCurrentYear",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 2
+			},
+			{
+				"name": "DivValueNextYear",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 2
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Exec_Analyst_Coverage_Consensus"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

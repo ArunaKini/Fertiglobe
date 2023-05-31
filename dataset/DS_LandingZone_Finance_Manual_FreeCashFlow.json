@@ -1,0 +1,23 @@
+{
+	"name": "DS_LandingZone_Finance_Manual_FreeCashFlow",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSStagingZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Free Cash Flow_Quarterly.xlsx",
+				"folderPath": "Finance/FutureManualExtracts",
+				"fileSystem": "ferti-dl-landing-dev"
+			},
+			"sheetIndex": 1,
+			"firstRowAsHeader": true
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

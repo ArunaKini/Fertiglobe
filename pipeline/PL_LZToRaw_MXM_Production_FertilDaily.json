@@ -1,0 +1,277 @@
+{
+	"name": "PL_LZToRaw_MXM_Production_FertilDaily",
+	"properties": {
+		"activities": [
+			{
+				"name": "spc_ExecutionLogEntry_Start",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "SourceToRaw",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Started",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": null,
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": null,
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "Production",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_Error",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "DF_LZToRaw_MXM_Production_FertilDaily",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "SourceToRaw",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Error",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": {
+								"value": "@activity('DF_LZToRaw_MXM_Production_FertilDaily').Error.errorCode",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": {
+								"value": "@activity('DF_LZToRaw_MXM_Production_FertilDaily').Error.message",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "Production",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_End",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "DF_LZToRaw_MXM_Production_FertilDaily",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "SourceToRaw",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Completed",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@convertToUtc(utcNow(),'UTC')",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": null,
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": null,
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "Production",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "DF_LZToRaw_MXM_Production_FertilDaily",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "spc_ExecutionLogEntry_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_LZToRaw_MXM_Production_FertilDaily",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Production/SourceToRaw"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-03-14T09:40:00Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

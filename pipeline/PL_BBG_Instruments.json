@@ -1,0 +1,1017 @@
+{
+	"name": "PL_BBG_Instruments",
+	"properties": {
+		"activities": [
+			{
+				"name": "spc_ExecutionLogEntry_Error",
+				"description": "Logging Error into Audit Table",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy dataLandingToRaw",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "SourceToRaw",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Error",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": {
+								"value": "@activity('Copy dataLandingToRaw').Error.errorCode",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": {
+								"value": "@replace(string(activity('Copy dataLandingToRaw').Error.message),'''',' ')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "BBG",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_End",
+				"description": "Logging Completion into Audit Table",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy dataLandingToRaw",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "SourceToRaw",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Completed",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@convertToUtc(utcNow(),'UTC')",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": null,
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": null,
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "Bloomberg",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_Start",
+				"description": "Logging Start of copy activity from Raw to conformed into Audit Table ",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "spc_ExecutionLogEntry_End",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "RawToConformed",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Started",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": null,
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": null,
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "BBG",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "Copy data-RawToConformed",
+				"description": "Copy to Conformed zone Ferti_BBG_Instruments",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "spc_ExecutionLogEntry_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "SqlPoolSink",
+						"writeBehavior": "Insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultStorage",
+							"type": "LinkedServiceReference"
+						},
+						"path": "syn-fs-dlk-dev01/synapse/workspaces/syn-ws-dlk-dev-01"
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "DL_SNAPSHOT_START_TIME"
+								},
+								"sink": {
+									"name": "RUN_DATE"
+								}
+							},
+							{
+								"source": {
+									"name": "IDENTIFIER"
+								},
+								"sink": {
+									"name": "IDENTIFIER"
+								}
+							},
+							{
+								"source": {
+									"name": "PX_CLOSE_1D"
+								},
+								"sink": {
+									"name": "PX_CLOSE_1D",
+									"scale": 4,
+									"precision": 15
+								}
+							},
+							{
+								"source": {
+									"name": "HIGH_52WEEK"
+								},
+								"sink": {
+									"name": "HIGH_52WEEK",
+									"scale": 4,
+									"precision": 15
+								}
+							},
+							{
+								"source": {
+									"name": "LOW_52WEEK"
+								},
+								"sink": {
+									"name": "LOW_52WEEK",
+									"scale": 4,
+									"precision": 15
+								}
+							},
+							{
+								"source": {
+									"name": "PX_CLOSE_DT"
+								},
+								"sink": {
+									"name": "PX_CLOSE_DT"
+								}
+							},
+							{
+								"source": {
+									"name": "LAST_UPDATE_DATE_EOD"
+								},
+								"sink": {
+									"name": "LAST_UPDATE_DATE_EOD"
+								}
+							},
+							{
+								"source": {
+									"name": "PX_LAST_EOD"
+								},
+								"sink": {
+									"name": "PX_LAST_EOD",
+									"scale": 4,
+									"precision": 15
+								}
+							},
+							{
+								"source": {
+									"name": "EQY_INIT_PO_SH_PX"
+								},
+								"sink": {
+									"name": "EQY_INIT_PO_SH_PX",
+									"scale": 4,
+									"precision": 15
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_ADLSStaging_BBG_Instruments",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileName": {
+								"value": "@pipeline().parameters.SourceFileName",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_Conformed_BBG_Instrument",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "spc_ExecutionLogEntry_End_conformedlayer",
+				"description": "Log into Audit End of successful load into conformed zone",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy data-RawToConformed",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "RawToConformed",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Completed",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@convertToUtc(utcNow(),'UTC')",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": null,
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": null,
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "BBG",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_Error_confomred",
+				"description": "Log into Audit End of failure load into conformed zone",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy data-RawToConformed",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "RawToConformed",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Error",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": {
+								"value": "@activity('Copy data-RawToConformed').Error.errorCode",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": {
+								"value": "@activity('Copy data-RawToConformed').Error.message",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "BBG",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_Start_consumption",
+				"description": "Log into Audit - Start of load into consumption zone",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "spc_ExecutionLogEntry_End_conformedlayer",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "ConformedToConsumption",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Started",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": null,
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": null,
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "BBG",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_LoadFerti_BBG_Instruments",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "spc_ExecutionLogEntry_Start_consumption",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_LoadFerti_BBG_Instruments]"
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_Error_BBG_Instruments",
+				"description": "Log into Audit End of failure load into consumption zone",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "spc_LoadFerti_BBG_Instruments",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "ConformedToConsumption",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Error",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": {
+								"value": "@activity('Copy data-RawToConformed').Error.errorCode",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": {
+								"value": "@activity('Copy data-RawToConformed').Error.message",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "BBG",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_End_consumption",
+				"description": "Log into Audit End of successful load into consumption zone",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "spc_LoadFerti_BBG_Instruments",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "ConformedToConsumption",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Completed",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": {
+								"value": "@convertToUtc(utcNow(),'UTC')",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": null,
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": null,
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "BBG",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "spc_ExecutionLogEntry_Start_BBG_Instruments",
+				"description": "Logging Start into Audit Table",
+				"type": "SqlPoolStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"sqlPool": {
+					"referenceName": "synwsdb01",
+					"type": "SqlPoolReference"
+				},
+				"typeProperties": {
+					"storedProcedureName": "[consumption].[spc_ExecutionLogEntry]",
+					"storedProcedureParameters": {
+						"DataLoadStage": {
+							"value": "SourceToRaw",
+							"type": "String"
+						},
+						"DataLoadStatus": {
+							"value": "Started",
+							"type": "String"
+						},
+						"DataRefreshDate": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EndTime": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"ErrorID": {
+							"value": null,
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": null,
+							"type": "String"
+						},
+						"ExecutionID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"StartTime": {
+							"value": {
+								"value": "@pipeline().TriggerTime",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"DataCategory": {
+							"value": "BBG",
+							"type": "String"
+						}
+					}
+				}
+			},
+			{
+				"name": "Copy dataLandingToRaw",
+				"description": "Move Data from Landing to Raw",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "spc_ExecutionLogEntry_Start_BBG_Instruments",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_ADLSRaw_BBG_Instruments_DynFileName",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileName": {
+								"value": "@pipeline().parameters.SourceFileName",
+								"type": "Expression"
+							},
+							"FolderName": {
+								"value": "@substring(pipeline().parameters.SourceFolderName,21,\nsub(length(pipeline().parameters.SourceFolderName),21))",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_ADLSStaging_BBG_Instruments",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileName": {
+								"value": "@pipeline().parameters.SourceFileName",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"SourceFileName": {
+				"type": "string"
+			},
+			"SourceFolderName": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"triggerfolder": {
+				"type": "String"
+			},
+			"triggerfilename": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Bloomberg"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-04-28T06:13:40Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

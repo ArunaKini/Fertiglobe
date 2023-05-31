@@ -1,0 +1,104 @@
+{
+	"name": "Prod_MXM_Fertil_Daily_Ph2",
+	"properties": {
+		"activities": [
+			{
+				"name": "PL_Generic_Validation_ph2",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_Generic_Validation_ph2",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"SourceFolderName": {
+							"value": "@pipeline().parameters.SourceFolderPath",
+							"type": "Expression"
+						},
+						"SourceFileName": {
+							"value": "@pipeline().parameters.SourceFileName",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "PL_LZToRaw_MXM_Production_FertilDaily",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "PL_Generic_Validation_ph2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_LZToRaw_MXM_Production_FertilDaily",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PL_RZToCZ_MXM_Production_EnergyMetricsFertil",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "PL_LZToRaw_MXM_Production_FertilDaily",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_MXM_Production_EnergyMetricsFertil",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "PL_RZToCZ_MXM_Production_DailyProductionSummary",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "PL_LZToRaw_MXM_Production_FertilDaily",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "PL_RZToCZ_MXM_Production_DailyProductionSummary",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"parameters": {
+			"SourceFolderPath": {
+				"type": "string"
+			},
+			"SourceFileName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Production"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-22T05:47:32Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

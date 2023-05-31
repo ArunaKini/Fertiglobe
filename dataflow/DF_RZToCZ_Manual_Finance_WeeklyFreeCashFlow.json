@@ -1,0 +1,81 @@
+{
+	"name": "DF_RZToCZ_Manual_Finance_WeeklyFreeCashFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_WeeklyFreeCashFlow",
+						"type": "DatasetReference"
+					},
+					"name": "WeeklyFreeCashFlow",
+					"description": "Import data from DS_Src_RawZone_WeeklyFreeCashFlow"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSynapseAnalyticsTable4",
+						"type": "DatasetReference"
+					},
+					"name": "SnkWeeklyFreeCashFlow",
+					"description": "Export data to DS_Snk_Weekly_Free_Cash_Flow"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Year as string,",
+				"          Week as string,",
+				"          ValueType as string,",
+				"          FCF_CY as string,",
+				"          FCF_PY as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> WeeklyFreeCashFlow",
+				"filter1 derive(FCF_CY = toFloat(replace(FCF_CY,'N/A','0')),",
+				"          FCF_PY = toFloat(replace(FCF_PY,'N/A','0')),",
+				"          Year = Year,",
+				"          Week = Week,",
+				"          ValueType = ValueType) ~> derivedColumn1",
+				"WeeklyFreeCashFlow filter(!isNull(Year)&&!isNull(Week)&&!isNull(ValueType)) ~> filter1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Year as integer,",
+				"          Week as string,",
+				"          ValueType as string,",
+				"          FCF_CY as decimal(25,8),",
+				"          FCF_PY as decimal(25,8)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Year,",
+				"          Week,",
+				"          ValueType,",
+				"          FCF_CY,",
+				"          FCF_PY",
+				"     )) ~> SnkWeeklyFreeCashFlow"
+			]
+		}
+	}
+}

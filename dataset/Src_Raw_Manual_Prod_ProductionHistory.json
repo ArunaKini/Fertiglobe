@@ -1,0 +1,132 @@
+{
+	"name": "Src_Raw_Manual_Prod_ProductionHistory",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSRawZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Database",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Production database.xlsx",
+				"folderPath": "Production/Manual_File",
+				"fileSystem": "ferti-dl-raw-dev"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Date",
+				"type": "String"
+			},
+			{
+				"name": "Month",
+				"type": "String"
+			},
+			{
+				"name": "Year",
+				"type": "String"
+			},
+			{
+				"name": "OpCo",
+				"type": "String"
+			},
+			{
+				"name": "Plant",
+				"type": "String"
+			},
+			{
+				"name": "Product",
+				"type": "String"
+			},
+			{
+				"name": "Product Line",
+				"type": "String"
+			},
+			{
+				"name": "Downtime",
+				"type": "String"
+			},
+			{
+				"name": "MTD Downtime",
+				"type": "String"
+			},
+			{
+				"name": "Production MTPD",
+				"type": "String"
+			},
+			{
+				"name": "Production MTD",
+				"type": "String"
+			},
+			{
+				"name": "Asset Utilisation",
+				"type": "String"
+			},
+			{
+				"name": "Capacity Efficiency",
+				"type": "String"
+			},
+			{
+				"name": "Onstream Efficiency",
+				"type": "String"
+			},
+			{
+				"name": "Comments",
+				"type": "String"
+			},
+			{
+				"name": "Energy Efficiency",
+				"type": "String"
+			},
+			{
+				"name": "Budget Monthly",
+				"type": "String"
+			},
+			{
+				"name": "% of Monthly Budget",
+				"type": "String"
+			},
+			{
+				"name": "Budget Yearly",
+				"type": "String"
+			},
+			{
+				"name": "% of Yearly Budget",
+				"type": "String"
+			},
+			{
+				"name": "Budgeted Production",
+				"type": "String"
+			},
+			{
+				"name": "Budgeted Asset Utilisation",
+				"type": "String"
+			},
+			{
+				"name": "Budgeted downtime",
+				"type": "String"
+			},
+			{
+				"name": "Forecasted Production",
+				"type": "String"
+			},
+			{
+				"name": "Forecasted Asset Utilisation",
+				"type": "String"
+			},
+			{
+				"name": "Production Capacity (MPC)",
+				"type": "String"
+			},
+			{
+				"name": "Days in month",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

@@ -1,0 +1,805 @@
+{
+	"name": "DS_RawZone_Production_Mxm_EFCDaily",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSRawZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat(formatDateTime(utcNow(),'yyyy-MM-dd'),'/EFC_DAILY_PRODUCTION_REPORT.csv')",
+					"type": "Expression"
+				},
+				"folderPath": "Production/Maximo/EFC_PRODUCTION",
+				"fileSystem": "ferti-dl-raw-dev"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "A1_TRANSFER_A2",
+				"type": "String"
+			},
+			{
+				"name": "A1_TRANSFER_U1",
+				"type": "String"
+			},
+			{
+				"name": "A1_TRANSFER_U2",
+				"type": "String"
+			},
+			{
+				"name": "A2_ACTUAL_MONTHLY_BUDGET",
+				"type": "String"
+			},
+			{
+				"name": "A2_ASSETUTILRATE",
+				"type": "String"
+			},
+			{
+				"name": "A2_BUDGET_MONTHLY",
+				"type": "String"
+			},
+			{
+				"name": "A2_CAPACITYEFFRATE",
+				"type": "String"
+			},
+			{
+				"name": "A2_CONTINUOUS_OPERATING_DAYS",
+				"type": "String"
+			},
+			{
+				"name": "A2_DOWNTIME",
+				"type": "String"
+			},
+			{
+				"name": "A2_ENERGYEFFICIENCY",
+				"type": "String"
+			},
+			{
+				"name": "A2_ONSTREAM_DAYS",
+				"type": "String"
+			},
+			{
+				"name": "A2_ONSTREAM_FACTOR",
+				"type": "String"
+			},
+			{
+				"name": "A2_PRODUCTION",
+				"type": "String"
+			},
+			{
+				"name": "A2_PROD_MTD",
+				"type": "String"
+			},
+			{
+				"name": "A2_TRANSFER_A1",
+				"type": "String"
+			},
+			{
+				"name": "A2_TRANSFER_U1",
+				"type": "String"
+			},
+			{
+				"name": "A2_TRANSFER_U2",
+				"type": "String"
+			},
+			{
+				"name": "ACTUAL_MONTHLY_BUDGET",
+				"type": "String"
+			},
+			{
+				"name": "AMMONIASITETANK_TRANSFER_UREA1",
+				"type": "String"
+			},
+			{
+				"name": "AMMONIASITETANK_TRANSFER_UREA2",
+				"type": "String"
+			},
+			{
+				"name": "AMMONIA_DISPATCH_SHIP1",
+				"type": "String"
+			},
+			{
+				"name": "AMMONIA_DISPATCH_SHIP2",
+				"type": "String"
+			},
+			{
+				"name": "AMMONIA_TRANSFER_VALUE1",
+				"type": "String"
+			},
+			{
+				"name": "AMMONIA_TRANSFER_VALUE2",
+				"type": "String"
+			},
+			{
+				"name": "ASSETUTILRATE",
+				"type": "String"
+			},
+			{
+				"name": "BOILER1",
+				"type": "String"
+			},
+			{
+				"name": "BOILER1_GJ",
+				"type": "String"
+			},
+			{
+				"name": "BOILER2",
+				"type": "String"
+			},
+			{
+				"name": "BOILER2_GJ",
+				"type": "String"
+			},
+			{
+				"name": "BOILER3",
+				"type": "String"
+			},
+			{
+				"name": "BOILER3_GJ",
+				"type": "String"
+			},
+			{
+				"name": "BOILER4",
+				"type": "String"
+			},
+			{
+				"name": "BOILER4_GJ",
+				"type": "String"
+			},
+			{
+				"name": "BOILER5",
+				"type": "String"
+			},
+			{
+				"name": "BOILER5_GJ",
+				"type": "String"
+			},
+			{
+				"name": "BUDGET_MONTHLY",
+				"type": "String"
+			},
+			{
+				"name": "CAPACITYEFFRATE",
+				"type": "String"
+			},
+			{
+				"name": "CO2_CONS_UREA1",
+				"type": "String"
+			},
+			{
+				"name": "CO2_CONS_UREA2",
+				"type": "String"
+			},
+			{
+				"name": "CO2_EM_A1",
+				"type": "String"
+			},
+			{
+				"name": "CO2_EM_A2",
+				"type": "String"
+			},
+			{
+				"name": "CO2_EM_F1_BOILER",
+				"type": "String"
+			},
+			{
+				"name": "CO2_EM_F2_BOILER",
+				"type": "String"
+			},
+			{
+				"name": "CO2_EM_GLOBAL",
+				"type": "String"
+			},
+			{
+				"name": "CO2_EM_SP_A1",
+				"type": "String"
+			},
+			{
+				"name": "CO2_EM_SP_A2",
+				"type": "String"
+			},
+			{
+				"name": "CO2_EM_SP_F1_STEAM",
+				"type": "String"
+			},
+			{
+				"name": "CO2_EM_SP_F2_STEAM",
+				"type": "String"
+			},
+			{
+				"name": "CONS_A1FG",
+				"type": "String"
+			},
+			{
+				"name": "CONS_A1FG_GJ",
+				"type": "String"
+			},
+			{
+				"name": "CONS_A1FG_HERMVL",
+				"type": "String"
+			},
+			{
+				"name": "CONS_A1FG_HERMVL_GJ",
+				"type": "String"
+			},
+			{
+				"name": "CONS_A1PG",
+				"type": "String"
+			},
+			{
+				"name": "CONS_A1PG_GJ",
+				"type": "String"
+			},
+			{
+				"name": "CONS_A2FG",
+				"type": "String"
+			},
+			{
+				"name": "CONS_A2FG_GJ",
+				"type": "String"
+			},
+			{
+				"name": "CONS_A2FG_HERMVL",
+				"type": "String"
+			},
+			{
+				"name": "CONS_A2FG_HERMVL_GJ",
+				"type": "String"
+			},
+			{
+				"name": "CONS_A2PG",
+				"type": "String"
+			},
+			{
+				"name": "CONS_A2PG_GJ",
+				"type": "String"
+			},
+			{
+				"name": "CONTINUOUS_OPERATING_DAYS",
+				"type": "String"
+			},
+			{
+				"name": "DAILY_AMMONIA_2_SALE_VOL",
+				"type": "String"
+			},
+			{
+				"name": "DAILY_AMMONIA_SALE_VOL",
+				"type": "String"
+			},
+			{
+				"name": "DAILY_UREA_2_SALE_VOL",
+				"type": "String"
+			},
+			{
+				"name": "DAILY_UREA_SALE_PORTSTORAGE1",
+				"type": "String"
+			},
+			{
+				"name": "DAILY_UREA_SALE_PORTSTORAGE2",
+				"type": "String"
+			},
+			{
+				"name": "DAILY_UREA_SALE_PS1_BAGS",
+				"type": "String"
+			},
+			{
+				"name": "DAILY_UREA_SALE_PS1_BAGS_T",
+				"type": "String"
+			},
+			{
+				"name": "DAILY_UREA_SALE_PS2_BAGS",
+				"type": "String"
+			},
+			{
+				"name": "DAILY_UREA_SALE_PS2_BAGS_T",
+				"type": "String"
+			},
+			{
+				"name": "DAILY_UREA_SALE_VOL",
+				"type": "String"
+			},
+			{
+				"name": "DAILY_UREA_SALE_VOL_BAGS",
+				"type": "String"
+			},
+			{
+				"name": "DAILY_UREA_SALE_VOL_BAGS_T",
+				"type": "String"
+			},
+			{
+				"name": "DOWNTIME",
+				"type": "String"
+			},
+			{
+				"name": "ELEC_AV_PG1",
+				"type": "String"
+			},
+			{
+				"name": "ELEC_AV_PG2",
+				"type": "String"
+			},
+			{
+				"name": "ELEC_FL_AMMONIA1",
+				"type": "String"
+			},
+			{
+				"name": "ELEC_FL_AMMONIA2",
+				"type": "String"
+			},
+			{
+				"name": "ELEC_FL_SP_CONS_1",
+				"type": "String"
+			},
+			{
+				"name": "ELEC_FL_SP_CONS_2",
+				"type": "String"
+			},
+			{
+				"name": "ELEC_FL_TOT_IMPORT_1",
+				"type": "String"
+			},
+			{
+				"name": "ELEC_FL_TOT_IMPORT_2",
+				"type": "String"
+			},
+			{
+				"name": "ELEC_FL_TOT_POWGEN_1",
+				"type": "String"
+			},
+			{
+				"name": "ELEC_FL_UREA1",
+				"type": "String"
+			},
+			{
+				"name": "ELEC_FL_UREA2",
+				"type": "String"
+			},
+			{
+				"name": "ELEC_GRID_TOTAL",
+				"type": "String"
+			},
+			{
+				"name": "ELEC_OUTSIDE_GRID1",
+				"type": "String"
+			},
+			{
+				"name": "ELEC_OUTSIDE_GRID2",
+				"type": "String"
+			},
+			{
+				"name": "ELEC_PG1",
+				"type": "String"
+			},
+			{
+				"name": "ELEC_PG2",
+				"type": "String"
+			},
+			{
+				"name": "ELEC_SP_CONS1_STEAM",
+				"type": "String"
+			},
+			{
+				"name": "ELEC_SP_CONS2_STEAM",
+				"type": "String"
+			},
+			{
+				"name": "ELEC_TOTAL_CONSUMPTION",
+				"type": "String"
+			},
+			{
+				"name": "ENERGYEFFICIENCY",
+				"type": "String"
+			},
+			{
+				"name": "FGH_PRODUCTIONID",
+				"type": "String"
+			},
+			{
+				"name": "NM3_BOILER1",
+				"type": "String"
+			},
+			{
+				"name": "NM3_BOILER2",
+				"type": "String"
+			},
+			{
+				"name": "NM3_BOILER3",
+				"type": "String"
+			},
+			{
+				"name": "NM3_BOILER4",
+				"type": "String"
+			},
+			{
+				"name": "NM3_BOILER5",
+				"type": "String"
+			},
+			{
+				"name": "ONSTREAMFACTOR",
+				"type": "String"
+			},
+			{
+				"name": "ONSTREAM_DAYS",
+				"type": "String"
+			},
+			{
+				"name": "PLANT",
+				"type": "String"
+			},
+			{
+				"name": "PRODUCTION",
+				"type": "String"
+			},
+			{
+				"name": "PRODUCTIONDATE",
+				"type": "String"
+			},
+			{
+				"name": "PROD_MTD",
+				"type": "String"
+			},
+			{
+				"name": "REMARKS",
+				"type": "String"
+			},
+			{
+				"name": "REMARKS_LONGDESCRIPTION",
+				"type": "String"
+			},
+			{
+				"name": "SECOND_GRADE_UREA_PS1",
+				"type": "String"
+			},
+			{
+				"name": "SECOND_GRADE_UREA_PS2",
+				"type": "String"
+			},
+			{
+				"name": "SHIP_1",
+				"type": "String"
+			},
+			{
+				"name": "SHIP_2",
+				"type": "String"
+			},
+			{
+				"name": "SITE",
+				"type": "String"
+			},
+			{
+				"name": "SP_CO2_TON_UREA1",
+				"type": "String"
+			},
+			{
+				"name": "SP_CO2_TON_UREA2",
+				"type": "String"
+			},
+			{
+				"name": "SP_CONS_A1FG",
+				"type": "String"
+			},
+			{
+				"name": "SP_CONS_A1FG_HERMVL",
+				"type": "String"
+			},
+			{
+				"name": "SP_CONS_A1PG",
+				"type": "String"
+			},
+			{
+				"name": "SP_CONS_A2FG",
+				"type": "String"
+			},
+			{
+				"name": "SP_CONS_A2FG_HERMVL",
+				"type": "String"
+			},
+			{
+				"name": "SP_CONS_A2PG",
+				"type": "String"
+			},
+			{
+				"name": "STATUS",
+				"type": "String"
+			},
+			{
+				"name": "STATUSDATE",
+				"type": "String"
+			},
+			{
+				"name": "STEAM_BOILER1",
+				"type": "String"
+			},
+			{
+				"name": "STEAM_BOILER2",
+				"type": "String"
+			},
+			{
+				"name": "STEAM_BOILER3",
+				"type": "String"
+			},
+			{
+				"name": "STEAM_BOILER4",
+				"type": "String"
+			},
+			{
+				"name": "STEAM_BOILER5",
+				"type": "String"
+			},
+			{
+				"name": "STEAM_TOTAL",
+				"type": "String"
+			},
+			{
+				"name": "STEAM_TOTAL1",
+				"type": "String"
+			},
+			{
+				"name": "STEAM_TOTAL2",
+				"type": "String"
+			},
+			{
+				"name": "STEAM_TO_GENERATOR1",
+				"type": "String"
+			},
+			{
+				"name": "STEAM_TO_GENERATOR2",
+				"type": "String"
+			},
+			{
+				"name": "TOTAL_CONS_FG",
+				"type": "String"
+			},
+			{
+				"name": "TOTAL_CONS_FG_GJ",
+				"type": "String"
+			},
+			{
+				"name": "TOTAL_CONS_NG",
+				"type": "String"
+			},
+			{
+				"name": "TOTAL_CONS_NG_GJ",
+				"type": "String"
+			},
+			{
+				"name": "TOTAL_CONS_NM3_FG",
+				"type": "String"
+			},
+			{
+				"name": "TOTAL_CONS_NM3_NG",
+				"type": "String"
+			},
+			{
+				"name": "TOTAL_CONS_NM3_PG",
+				"type": "String"
+			},
+			{
+				"name": "TOTAL_CONS_PG",
+				"type": "String"
+			},
+			{
+				"name": "TOTAL_CONS_PG_GJ",
+				"type": "String"
+			},
+			{
+				"name": "TOTAL_GAS_CONS_1",
+				"type": "String"
+			},
+			{
+				"name": "TOTAL_GAS_CONS_1_GJ",
+				"type": "String"
+			},
+			{
+				"name": "TOTAL_GAS_CONS_2",
+				"type": "String"
+			},
+			{
+				"name": "TOTAL_GAS_CONS_2_GJ",
+				"type": "String"
+			},
+			{
+				"name": "TOTAL_SEA_WATER",
+				"type": "String"
+			},
+			{
+				"name": "TOTAL_SP_GAS_CONS_1",
+				"type": "String"
+			},
+			{
+				"name": "TOTAL_SP_GAS_CONS_2",
+				"type": "String"
+			},
+			{
+				"name": "TRANSDATE",
+				"type": "String"
+			},
+			{
+				"name": "TRANSFER_TO_PORTSTORAGE1",
+				"type": "String"
+			},
+			{
+				"name": "TRANSFER_TO_PORTSTORAGE2",
+				"type": "String"
+			},
+			{
+				"name": "U1_ACTUAL_MONTHLY_BUDGET",
+				"type": "String"
+			},
+			{
+				"name": "U1_ASSETUTILRATE",
+				"type": "String"
+			},
+			{
+				"name": "U1_BUDGET_MONTHLY",
+				"type": "String"
+			},
+			{
+				"name": "U1_CAPACITYEFFRATE",
+				"type": "String"
+			},
+			{
+				"name": "U1_CONTINUOUS_OPERATING_DAYS",
+				"type": "String"
+			},
+			{
+				"name": "U1_DOWNTIME",
+				"type": "String"
+			},
+			{
+				"name": "U1_ENERGYEFFICIENCY",
+				"type": "String"
+			},
+			{
+				"name": "U1_ONSTREAMFACTOR",
+				"type": "String"
+			},
+			{
+				"name": "U1_ONSTREAM_DAYS",
+				"type": "String"
+			},
+			{
+				"name": "U1_PRODUCTION",
+				"type": "String"
+			},
+			{
+				"name": "U1_PROD_MTD",
+				"type": "String"
+			},
+			{
+				"name": "U2_ACTUAL_MONTHLY_BUDGET",
+				"type": "String"
+			},
+			{
+				"name": "U2_ASSETUTILRATE",
+				"type": "String"
+			},
+			{
+				"name": "U2_BUDGET_MONTHLY",
+				"type": "String"
+			},
+			{
+				"name": "U2_CAPACITYEFFRATE",
+				"type": "String"
+			},
+			{
+				"name": "U2_CONTINUOUS_OPERATING_DAYS",
+				"type": "String"
+			},
+			{
+				"name": "U2_DOWNTIME",
+				"type": "String"
+			},
+			{
+				"name": "U2_ENERGYEFFICIENCY",
+				"type": "String"
+			},
+			{
+				"name": "U2_ONSTREAM_DAYS",
+				"type": "String"
+			},
+			{
+				"name": "U2_ONSTREAM_FACTOR",
+				"type": "String"
+			},
+			{
+				"name": "U2_PRODUCTION",
+				"type": "String"
+			},
+			{
+				"name": "U2_PROD_MTD",
+				"type": "String"
+			},
+			{
+				"name": "UREA1_DISPATCH_SHIP1",
+				"type": "String"
+			},
+			{
+				"name": "UREA1_DISPATCH_SHIP2",
+				"type": "String"
+			},
+			{
+				"name": "UREA1_DISPATCH_TRUCK",
+				"type": "String"
+			},
+			{
+				"name": "UREA2_DISPATCH_SHIP1",
+				"type": "String"
+			},
+			{
+				"name": "UREA2_DISPATCH_SHIP2",
+				"type": "String"
+			},
+			{
+				"name": "UREA2_DISPATCH_TRUCK",
+				"type": "String"
+			},
+			{
+				"name": "WATER_DESLT_IMPORT_1",
+				"type": "String"
+			},
+			{
+				"name": "WATER_DESLT_IMPORT_2",
+				"type": "String"
+			},
+			{
+				"name": "WATER_DESLT_SP_UREA1",
+				"type": "String"
+			},
+			{
+				"name": "WATER_DESLT_SP_UREA2",
+				"type": "String"
+			},
+			{
+				"name": "WATER_INSIDE",
+				"type": "String"
+			},
+			{
+				"name": "WATER_INSIDE2",
+				"type": "String"
+			},
+			{
+				"name": "WATER_INSIDE_RO2",
+				"type": "String"
+			},
+			{
+				"name": "WATER_OUTSIDE",
+				"type": "String"
+			},
+			{
+				"name": "WATER_OUTSIDE2",
+				"type": "String"
+			},
+			{
+				"name": "WATER_OUTSIDE2_EBIC",
+				"type": "String"
+			},
+			{
+				"name": "WATER_OUTSIDE2_SDIC",
+				"type": "String"
+			},
+			{
+				"name": "WATER_OUTSIDE_EBIC",
+				"type": "String"
+			},
+			{
+				"name": "WATER_TOTAL",
+				"type": "String"
+			},
+			{
+				"name": "WATER_TOTAL2",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

@@ -1,0 +1,84 @@
+{
+	"name": "DF_RZToCZ_Executive_Manual_ExecAnalystCovConsensus",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_ExecAnalystCovConsensus",
+						"type": "DatasetReference"
+					},
+					"name": "SrcRawZoneExecAnalystCovConsensus"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_Exec_Analyst_Coverage_Consensus",
+						"type": "DatasetReference"
+					},
+					"name": "SnkConformedZoneExecAnalystCoverageConsensus"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          Analyst as string,",
+				"          {Latest Publication } as string,",
+				"          Rec as string,",
+				"          {Target Price} as string,",
+				"          {Upside/Downside} as string,",
+				"          EBITDA_Current_Year as string,",
+				"          EBITDA_Next_Year as string,",
+				"          {Net_income_Current Year} as string,",
+				"          {Net_income_Next Year} as string,",
+				"          {Div_Val_Current_Year } as string,",
+				"          {Div_Val_Next_Year } as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SrcRawZoneExecAnalystCovConsensus",
+				"SrcRawZoneExecAnalystCovConsensus sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Analyst as string,",
+				"          LatestPublication as date,",
+				"          Rec as string,",
+				"          TargetPrice as decimal(38,2),",
+				"          UpsideDownside as decimal(38,2),",
+				"          AdjEBITDACurrentYear as decimal(38,2),",
+				"          AdjEBITDANextYear as decimal(38,2),",
+				"          NetIncomeCurrentYear as decimal(38,2),",
+				"          NetIncomeNextYear as decimal(38,2),",
+				"          DivValueCurrentYear as decimal(38,2),",
+				"          DivValueNextYear as decimal(38,2)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Analyst,",
+				"          LatestPublication = {Latest Publication },",
+				"          Rec,",
+				"          TargetPrice = {Target Price},",
+				"          UpsideDownside = {Upside/Downside},",
+				"          AdjEBITDACurrentYear = EBITDA_Current_Year,",
+				"          AdjEBITDANextYear = EBITDA_Next_Year,",
+				"          NetIncomeCurrentYear = {Net_income_Current Year},",
+				"          NetIncomeNextYear = {Net_income_Next Year},",
+				"          DivValueCurrentYear = {Div_Val_Current_Year },",
+				"          DivValueNextYear = {Div_Val_Next_Year }",
+				"     )) ~> SnkConformedZoneExecAnalystCoverageConsensus"
+			]
+		}
+	}
+}

@@ -1,0 +1,41 @@
+{
+	"name": "DS_LandingZone_Finance_Manual_FctNetDebtEBITDA",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSStagingZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "FCF and net debt EBITDA RF_05.xlsx",
+				"folderPath": "Finance/ManualExtracts",
+				"fileSystem": "ferti-dl-landing-dev"
+			},
+			"sheetIndex": 2,
+			"range": "A2",
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Year",
+				"type": "String"
+			},
+			{
+				"name": "Quarter",
+				"type": "String"
+			},
+			{
+				"name": "Value_Type",
+				"type": "String"
+			},
+			{
+				"name": "Net_Debt_EBITDA",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

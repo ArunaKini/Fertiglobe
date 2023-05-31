@@ -1,0 +1,49 @@
+{
+	"name": "DS_Src_RawZone_FctSalesVolumes",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSRawZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "Finance",
+				"fileSystem": "ferti-dl-raw-dev"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Account",
+				"type": "String"
+			},
+			{
+				"name": "Account Description",
+				"type": "String"
+			},
+			{
+				"name": "Account Type Description",
+				"type": "String"
+			},
+			{
+				"name": "MR Account",
+				"type": "String"
+			},
+			{
+				"name": "MR Account Description",
+				"type": "String"
+			},
+			{
+				"name": "Statuary Account Description",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

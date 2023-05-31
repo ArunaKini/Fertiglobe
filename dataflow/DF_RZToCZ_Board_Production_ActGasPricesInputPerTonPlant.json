@@ -1,0 +1,100 @@
+{
+	"name": "DF_RZToCZ_Board_Production_ActGasPricesInputPerTonPlant",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_Prod_FctGasPricesInputPerTonPlant",
+						"type": "DatasetReference"
+					},
+					"name": "SrcFctGasPricesInputPerTonPlant"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_Synapase_Prod_Budget_GasPricesInputPerTonPlant",
+						"type": "DatasetReference"
+					},
+					"name": "SnkBudgetGasPricesInputPerTonPlant"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DCMetrics"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "aggregate1"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     Scenario as integer,",
+				"     Version as integer",
+				"}",
+				"source(output(",
+				"          Month as string,",
+				"          Entity as string,",
+				"          Scenario as integer,",
+				"          Version as integer,",
+				"          {Plan Year} as string,",
+				"          Plant as string,",
+				"          Metric as string,",
+				"          {PLAN - Input per ton} as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SrcFctGasPricesInputPerTonPlant",
+				"filter1 derive(UTIL = case(Metric == 'COGS_UTIL_MM', toDouble({PLAN - Input per ton}), toDouble(0.00)),",
+				"          FDST = case(Metric == 'COGS_FDST_MM', toDouble({PLAN - Input per ton}), toDouble(0.00))) ~> DCMetrics",
+				"SrcFctGasPricesInputPerTonPlant filter((Scenario == $Scenario && Version == $Version)) ~> filter1",
+				"DCMetrics aggregate(groupBy(Month,",
+				"          Entity,",
+				"          Plant,",
+				"          Scenario,",
+				"          Version,",
+				"          {Plan Year}),",
+				"     UTIL = sum(UTIL),",
+				"          FDST = sum(FDST)) ~> aggregate1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Month as integer,",
+				"          Entity as integer,",
+				"          Scenario as integer,",
+				"          Version as integer,",
+				"          Plan_Year as integer,",
+				"          Plant as string,",
+				"          UTIL as decimal(25,5),",
+				"          FDST as decimal(25,5)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Month,",
+				"          Entity,",
+				"          Scenario,",
+				"          Version,",
+				"          Plan_Year = {Plan Year},",
+				"          Plant,",
+				"          UTIL,",
+				"          FDST",
+				"     )) ~> SnkBudgetGasPricesInputPerTonPlant"
+			]
+		}
+	}
+}

@@ -1,0 +1,72 @@
+{
+	"name": "DF_SrcToRZ_Manual_Executive_ExecAnalystCovConsensus",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_LandingZone_Executive_Manual_ExecAnalystCovConsensus",
+						"type": "DatasetReference"
+					},
+					"name": "SrcLandingExecAnalystCovConsensus"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_ADLSRawZone",
+						"type": "DatasetReference"
+					},
+					"name": "SnkRawZoneExecAnalystCovConsensus"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Analyst as string,",
+				"          {Latest Publication } as string,",
+				"          Rec as string,",
+				"          {Target Price} as string,",
+				"          {Upside/Downside} as string,",
+				"          {Adj.EBITDA (Current Year)} as string,",
+				"          {Adj.EBITDA (Next Year)} as string,",
+				"          {Net income (Current Year)} as string,",
+				"          {Net income (Next Year)} as string,",
+				"          {Div Val(m$) (Current Year) } as string,",
+				"          {Div Val(m$) (Next Year) } as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SrcLandingExecAnalystCovConsensus",
+				"SrcLandingExecAnalystCovConsensus filter(Analyst != 'Share price') ~> filter1",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['ExecAnalystCoverageConsensus.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          Analyst,",
+				"          {Latest Publication },",
+				"          Rec,",
+				"          {Target Price},",
+				"          {Upside/Downside},",
+				"          EBITDA_Current_Year = {Adj.EBITDA (Current Year)},",
+				"          EBITDA_Next_Year = {Adj.EBITDA (Next Year)},",
+				"          {Net_income_Current Year} = {Net income (Current Year)},",
+				"          {Net_income_Next Year} = {Net income (Next Year)},",
+				"          {Div_Val_Current_Year } = {Div Val(m$) (Current Year) },",
+				"          {Div_Val_Next_Year } = {Div Val(m$) (Next Year) }",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> SnkRawZoneExecAnalystCovConsensus"
+			]
+		}
+	}
+}

@@ -1,0 +1,123 @@
+{
+	"name": "DF_RZToCZ_Board_Finance_BudgetInventoryVolume",
+	"properties": {
+		"folder": {
+			"name": "Finance/RawToConformed"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_FctInventoryVolume",
+						"type": "DatasetReference"
+					},
+					"name": "SrcBudgetInventoryVolume"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_Synapse_Budget_Inventory_Volume",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     Scenario as integer,",
+				"     Version as integer",
+				"}",
+				"source(output(",
+				"          Month as integer,",
+				"          Entity as string,",
+				"          Counterparty as string,",
+				"          Scenario as short,",
+				"          {Plan Year} as short,",
+				"          Version as short,",
+				"          {Trading/Own Produced} as string,",
+				"          Movement as string,",
+				"          Product as string,",
+				"          {PLAN - INV Quantities} as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:['Finance/Fct_Inventory_Volume/*/FCT_INVENTORY_VOLUME.csv']) ~> SrcBudgetInventoryVolume",
+				"filter1 select(mapColumn(",
+				"          Month,",
+				"          Entity,",
+				"          Scenario,",
+				"          Version,",
+				"          Plan_Year = {Plan Year},",
+				"          Product,",
+				"          {Trading/Own_Produced} = {Trading/Own Produced},",
+				"          Counterparty,",
+				"          PLAN_INV_Quantities = {PLAN - INV Quantities}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 aggregate(groupBy(Month,",
+				"          Entity,",
+				"          Product,",
+				"          Scenario,",
+				"          Version,",
+				"          Plan_Year,",
+				"          {Trading/Own_Produced},",
+				"          Counterparty,",
+				"          PLAN_INV_Quantities),",
+				"     Cnt = count(1)) ~> aggregate1",
+				"SrcBudgetInventoryVolume filter({Movement} == 'CLO' && Scenario == $Scenario && Version == $Version) ~> filter1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Month as integer,",
+				"          Entity as string,",
+				"          Scenario as integer,",
+				"          Version as integer,",
+				"          Plan_Year as integer,",
+				"          Product as string,",
+				"          {Trading/Own_Produced} as string,",
+				"          Counterparty as string,",
+				"          Plan_Inv_Quantities as decimal(38,20)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Month,",
+				"          Entity,",
+				"          Scenario,",
+				"          Version,",
+				"          Plan_Year,",
+				"          Product,",
+				"          {Trading/Own_Produced},",
+				"          Counterparty,",
+				"          Plan_Inv_Quantities = PLAN_INV_Quantities",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

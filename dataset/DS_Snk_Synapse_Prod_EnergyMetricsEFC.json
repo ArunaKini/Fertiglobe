@@ -1,0 +1,443 @@
+{
+	"name": "DS_Snk_Synapse_Prod_EnergyMetricsEFC",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "PRODUCTIONDATE",
+				"type": "date"
+			},
+			{
+				"name": "PLANT",
+				"type": "varchar"
+			},
+			{
+				"name": "STATUS",
+				"type": "varchar"
+			},
+			{
+				"name": "STATUSDATE",
+				"type": "date"
+			},
+			{
+				"name": "REMARKS",
+				"type": "varchar"
+			},
+			{
+				"name": "CONS_A1PG",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "CONS_A1FG",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "CONS_A2PG",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "CONS_A2FG",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "BOILER1",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "BOILER2",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "BOILER3",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "TOTAL_CONS_PG",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "TOTAL_CONS_FG",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "TOTAL_CONS_NG",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "CONS_A1PG_GJ",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "CONS_A1FG_GJ",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "CONS_A2PG_GJ",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "CONS_A2FG_GJ",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "BOILER1_GJ",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "BOILER2_GJ",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "BOILER3_GJ",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "TOTAL_CONS_PG_GJ",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "TOTAL_CONS_FG_GJ",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "TOTAL_CONS_NG_GJ",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "SP_CONS_A1PG",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "SP_CONS_A1FG",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "SP_CONS_A2PG",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "SP_CONS_A2FG",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "NM3_BOILER1",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "NM3_BOILER2",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "NM3_BOILER3",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "TOTAL_CONS_NM3_PG",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "TOTAL_CONS_NM3_FG",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "TOTAL_CONS_NM3_NG",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "CO2_CONS_UREA1",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "SP_CO2_TON_UREA1",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "CO2_CONS_UREA2",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "SP_CO2_TON_UREA2",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "CO2_EM_A1",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "CO2_EM_SP_A1",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "CO2_EM_A2",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "CO2_EM_SP_A2",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "CO2_EM_F1_BOILER",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "CO2_EM_SP_F1_STEAM",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "CO2_EM_GLOBAL",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "STEAM_BOILER1",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "STEAM_BOILER2",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "STEAM_BOILER3",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "STEAM_TOTAL",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "ELEC_PG1",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "ELEC_OUTSIDE_GRID1",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "ELEC_AV_PG1",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "ELEC_SP_CONS1_STEAM",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "ELEC_PG2",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "ELEC_OUTSIDE_GRID2",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "ELEC_AV_PG2",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "ELEC_SP_CONS2_STEAM",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "ELEC_GRID_TOTAL",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "ELEC_TOTAL_CONSUMPTION",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "STEAM_TO_GENERATOR1",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "STEAM_TO_GENERATOR2",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "WATER_OUTSIDE",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "WATER_OUTSIDE_EBIC",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "WATER_INSIDE",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "WATER_INSIDE_RO2",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "WATER_TOTAL",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "WATER_OUTSIDE2",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "WATER_OUTSIDE2_EBIC",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "WATER_OUTSIDE2_SDIC",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "WATER_INSIDE2",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "WATER_TOTAL2",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Prod_Energy_Metrics_EFC"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

@@ -1,0 +1,33 @@
+{
+	"name": "TRG_CZToConsZ_Finance_Board",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipeline": {
+			"pipelineReference": {
+				"referenceName": "PL_CZToConsZ_Finance_Board",
+				"type": "PipelineReference"
+			}
+		},
+		"type": "TumblingWindowTrigger",
+		"typeProperties": {
+			"frequency": "Hour",
+			"interval": 24,
+			"startTime": "2023-02-03T05:00:00Z",
+			"delay": "01:30:00",
+			"maxConcurrency": 50,
+			"retryPolicy": {
+				"intervalInSeconds": 30
+			},
+			"dependsOn": [
+				{
+					"type": "TumblingWindowTriggerDependencyReference",
+					"referenceTrigger": {
+						"referenceName": "TRG_RZToCZ_Finance_Board",
+						"type": "TriggerReference"
+					}
+				}
+			]
+		}
+	}
+}

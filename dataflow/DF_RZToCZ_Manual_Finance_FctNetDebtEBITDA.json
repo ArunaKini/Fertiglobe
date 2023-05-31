@@ -1,0 +1,77 @@
+{
+	"name": "DF_RZToCZ_Manual_Finance_FctNetDebtEBITDA",
+	"properties": {
+		"folder": {
+			"name": "Finance/StageToRaw"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_FctNetDebt",
+						"type": "DatasetReference"
+					},
+					"name": "SrcRawFctNetDebt"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_Synapse_Fct_NetDebt",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregate1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Year as string,",
+				"          Quarter as string,",
+				"          Value_Type as string,",
+				"          Net_Debt_EBITDA as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC())) ~> SrcRawFctNetDebt",
+				"SrcRawFctNetDebt aggregate(groupBy(Year,",
+				"          Quarter,",
+				"          Value_Type,",
+				"          Net_Debt_EBITDA),",
+				"     Cnt = count(1)) ~> aggregate1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Year as integer,",
+				"          Quarter as integer,",
+				"          ValueType as string,",
+				"          Net_Debt_EBITDA as decimal(38,20)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Year,",
+				"          Quarter,",
+				"          ValueType = Value_Type,",
+				"          Net_Debt_EBITDA",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

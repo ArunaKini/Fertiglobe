@@ -1,0 +1,17 @@
+{
+	"name": "DIM_ProjectComparison",
+	"properties": {
+		"content": {
+			"query": "-- This is auto-generated code\nSELECT * FROM\n    OPENROWSET(\n        BULK 'https://stdlkdevuaenorth001.dfs.core.windows.net/ferti-dl-raw-dev/Finance/Project/2023-02-20/PROJECT.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0'\n    ) AS [result]\n\nEXCEPT\n SELECT * FROM\n    OPENROWSET(\n        BULK 'https://stdlkdevuaenorth001.dfs.core.windows.net/ferti-dl-raw-dev/Finance/Project/2022-11-24/PROJECT.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0'\n    ) AS [result]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

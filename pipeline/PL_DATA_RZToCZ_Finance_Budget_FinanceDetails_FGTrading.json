@@ -1,0 +1,62 @@
+{
+	"name": "PL_DATA_RZToCZ_Finance_Budget_FinanceDetails_FGTrading",
+	"properties": {
+		"description": "Raw Zone to Conformed Zone",
+		"activities": [
+			{
+				"name": "DF_RZToCZ_Finance_Budget_FinanceDetails_FGTrading",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_RZToCZ_Board_Finance_BudgetFinanceDetails_FG",
+						"type": "DataFlowReference",
+						"parameters": {
+							"Version": {
+								"value": "@pipeline().parameters.Version",
+								"type": "Expression"
+							},
+							"Scenario": {
+								"value": "@pipeline().parameters.Scenario",
+								"type": "Expression"
+							}
+						}
+					},
+					"staging": {
+						"linkedService": {
+							"referenceName": "LS_ADLSRawZone",
+							"type": "LinkedServiceReference"
+						},
+						"folderPath": "ferti-dl-raw-dev/SynapseInternal"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"parameters": {
+			"Version": {
+				"type": "string",
+				"defaultValue": "06"
+			},
+			"Scenario": {
+				"type": "string",
+				"defaultValue": "05"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-03-14T12:13:23Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

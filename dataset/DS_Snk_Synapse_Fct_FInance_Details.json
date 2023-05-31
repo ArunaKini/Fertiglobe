@@ -1,0 +1,115 @@
+{
+	"name": "DS_Snk_Synapse_Fct_FInance_Details",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "Month",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Revenue",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "Version",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Plan_Year",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Scenario",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Gas_Cost",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "Variable_Cost",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "Adjusted_EBITDA",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "Adjusted_net_income_share",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "MR_Account",
+				"type": "varchar"
+			},
+			{
+				"name": "MR_Account_Description",
+				"type": "varchar"
+			},
+			{
+				"name": "SG_A",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "Fixed_Cost",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "Statuary_Account_Description",
+				"type": "varchar"
+			},
+			{
+				"name": "Entity",
+				"type": "varchar"
+			},
+			{
+				"name": "Entity_Description",
+				"type": "varchar"
+			},
+			{
+				"name": "OCINVT_IFRS",
+				"type": "varchar"
+			},
+			{
+				"name": "Account",
+				"type": "varchar"
+			},
+			{
+				"name": "Account_Description",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Fct_Finance_Details"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

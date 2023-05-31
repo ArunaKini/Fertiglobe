@@ -1,0 +1,118 @@
+{
+	"name": "DS_Snk_Synapse_Prod_SitesDataEmployee",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "Company",
+				"type": "varchar"
+			},
+			{
+				"name": "Month",
+				"type": "varchar"
+			},
+			{
+				"name": "Hours",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Fatility",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "LTI",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "RWC",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "MTC",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "LTIR",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "TRIR",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "PSI",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "PSIR",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "EI",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "EIR",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "LTIR_Target",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "TRIR_Target",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "PSI_Target",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			},
+			{
+				"name": "EI_Target",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Prod_SitesData_Employee"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

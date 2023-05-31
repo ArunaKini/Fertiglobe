@@ -1,0 +1,108 @@
+{
+	"name": "DS_Snk_Synapse_Consolidated_Cash",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Synapse_SQL_Pool",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Grouping",
+				"type": "varchar"
+			},
+			{
+				"name": "Cash_Type",
+				"type": "varchar"
+			},
+			{
+				"name": "Company_Sector",
+				"type": "varchar"
+			},
+			{
+				"name": "Company",
+				"type": "varchar"
+			},
+			{
+				"name": "Bank",
+				"type": "varchar"
+			},
+			{
+				"name": "Account",
+				"type": "varchar"
+			},
+			{
+				"name": "All_USD",
+				"type": "decimal",
+				"precision": 17,
+				"scale": 2
+			},
+			{
+				"name": "All_USUSD_Prev",
+				"type": "decimal",
+				"precision": 17,
+				"scale": 2
+			},
+			{
+				"name": "Delta_All_USD",
+				"type": "decimal",
+				"precision": 17,
+				"scale": 2
+			},
+			{
+				"name": "USD_CCY",
+				"type": "decimal",
+				"precision": 17,
+				"scale": 2
+			},
+			{
+				"name": "EUR_CCY",
+				"type": "decimal",
+				"precision": 17,
+				"scale": 2
+			},
+			{
+				"name": "EGP_CCY",
+				"type": "decimal",
+				"precision": 17,
+				"scale": 2
+			},
+			{
+				"name": "GBP_CCY",
+				"type": "decimal",
+				"precision": 17,
+				"scale": 2
+			},
+			{
+				"name": "DZD_CCY",
+				"type": "decimal",
+				"precision": 17,
+				"scale": 2
+			},
+			{
+				"name": "JPY_CCY",
+				"type": "decimal",
+				"precision": 17,
+				"scale": 2
+			},
+			{
+				"name": "AED_CCY",
+				"type": "decimal",
+				"precision": 17,
+				"scale": 2
+			},
+			{
+				"name": "CNY_CCY",
+				"type": "decimal",
+				"precision": 17,
+				"scale": 2
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Consolidated_Cash"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

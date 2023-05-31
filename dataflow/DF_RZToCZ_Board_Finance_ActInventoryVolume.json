@@ -1,0 +1,108 @@
+{
+	"name": "DF_RZToCZ_Board_Finance_ActInventoryVolume",
+	"properties": {
+		"folder": {
+			"name": "Finance/RawToConformed"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_ActInventoryVolume",
+						"type": "DatasetReference"
+					},
+					"name": "ArcActInventoryVolume"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_Synapse_Act_Inventory_Volume",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "aggregate1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Month as integer,",
+				"          Entity as short,",
+				"          Counterparty as string,",
+				"          {Trading/Own Produced} as string,",
+				"          Movement as string,",
+				"          Product as string,",
+				"          {ACT - Inventory Movement Schedule} as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:['Finance/Act_Inventory_Volume/*/ACT_INVENTORY_VOLUME.csv']) ~> ArcActInventoryVolume",
+				"derivedColumn1 select(mapColumn(",
+				"          Month,",
+				"          Entity,",
+				"          Product,",
+				"          {PLAN - INV Quantities},",
+				"          {Trading/Own_Produced} = {Trading/Own Produced},",
+				"          Counterparty",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"filter1 derive({PLAN - INV Quantities} = case(isNull({ACT - Inventory Movement Schedule}), toDouble(0.0), {ACT - Inventory Movement Schedule})) ~> derivedColumn1",
+				"ArcActInventoryVolume filter({Movement} == 'CLO') ~> filter1",
+				"select1 aggregate(groupBy(Month,",
+				"          Entity,",
+				"          Product,",
+				"          {Trading/Own_Produced},",
+				"          Counterparty,",
+				"          {PLAN - INV Quantities}),",
+				"     Cnt = count(1)) ~> aggregate1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Month as integer,",
+				"          Entity as string,",
+				"          Product as string,",
+				"          {Trading/Own_Produced} as string,",
+				"          Counterparty as string,",
+				"          Plan_Inv_Quantities as decimal(38,20)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Month,",
+				"          Entity,",
+				"          Product,",
+				"          Plan_Inv_Quantities = {PLAN - INV Quantities},",
+				"          {Trading/Own_Produced},",
+				"          Counterparty",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

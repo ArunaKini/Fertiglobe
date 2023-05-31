@@ -1,0 +1,258 @@
+{
+	"name": "ARK_Test",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"sqlReaderQuery": "SELECT MAX(DISTINCT (SUBSTRING(valuetype, PATINDEX('%[0-9]%', valuetype), PATINDEX('%[0-9][^0-9]%', valuetype + 't') - PATINDEX('%[0-9]%', \n                    valuetype) + 1))) AS ValueType from [conformed].[Categorised_Free_Cash_Flow]",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_Snk_Categorised_Free_Cash_Flow",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Set variable MaxRF",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Lookup1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "MaxRFValue",
+					"value": {
+						"value": "@if(empty(activity('Lookup1').output.firstRow.ValueType),'1',activity('Lookup1').output.firstRow.ValueType)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Set variable MaxRF",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_RZToCZ_Manual_Finance_CategorisedFreeCashFlow_ark",
+						"type": "DataFlowReference",
+						"parameters": {
+							"RFValueType": {
+								"value": "'@{variables('MaxRFValue')}'",
+								"type": "Expression"
+							}
+						}
+					},
+					"staging": {
+						"linkedService": {
+							"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultStorage",
+							"type": "LinkedServiceReference"
+						},
+						"folderPath": "fertil-dl-raw-dev/SynapseInternal"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "ValidationCheck",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_LandingZone_Production_Mxm_EBICDailyExcel",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"columnCount",
+						"exists",
+						"size"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "SendEmailNotification_copy1",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://la-dlk-dev-02.azurewebsites.net:443/api/wf_SendEmailNotification/triggers/manual/invoke?api-version=2022-05-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Dgak4OoXz31Apy4sAL1Po882uvk9xEtJ6bovQica9d4",
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
+					"method": "POST",
+					"headers": {
+						"Content-Type": "application/json"
+					},
+					"body": {
+						"value": "{\n\"Subject\" : \"Alert - File Not received\",\n\"pipelinename\" : \"@{pipeline().Pipeline}\",\n\"pipelineid\" : \"@{pipeline().RunId}\",\n\"Issues\" : \"File Doesnt Exsist\"\n}",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ChildItems",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_LandingZone_Production_Mxm_EBIC_Ph2",
+						"type": "DatasetReference",
+						"parameters": {
+							"DS_SourceFolder": "Production/Maximo/Fertil/2023-05-18"
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "ValidationCheck_copy1",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "Filter1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_LandingZone_Production_Mxm_EBIC_File_Ph2",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileName": {
+								"value": "@activity('Filter1').output.Value.name",
+								"type": "Expression"
+							},
+							"DS_SourceFolder": "Production/Maximo/Fertil/2023-05-18"
+						}
+					},
+					"fieldList": [
+						"size",
+						"columnCount",
+						"exists"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "Filter1",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "ChildItems",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('ChildItems').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@endswith(item().name,'xlsx')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"MaxRFValue": {
+				"type": "String",
+				"defaultValue": "1"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-23T06:06:43Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

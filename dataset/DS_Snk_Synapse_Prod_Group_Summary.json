@@ -1,0 +1,41 @@
+{
+	"name": "DS_Snk_Synapse_Prod_Group_Summary",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "Year",
+				"type": "varchar"
+			},
+			{
+				"name": "Plant",
+				"type": "varchar"
+			},
+			{
+				"name": "Energy_efficiency",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 18
+			},
+			{
+				"name": "GHG_per_ton_of_ammonia_produced",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 18
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Prod_Group_Summary"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

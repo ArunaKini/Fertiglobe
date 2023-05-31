@@ -1,0 +1,56 @@
+{
+	"name": "DS_Snk_Synapse_Prod_BudgetQuantityInputPerTonTotal",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "Month",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Entity",
+				"type": "varchar"
+			},
+			{
+				"name": "Plant",
+				"type": "varchar"
+			},
+			{
+				"name": "Metric",
+				"type": "varchar"
+			},
+			{
+				"name": "Scenario",
+				"type": "varchar"
+			},
+			{
+				"name": "Version",
+				"type": "varchar"
+			},
+			{
+				"name": "Plan_Year",
+				"type": "varchar"
+			},
+			{
+				"name": "PLAN_Quantity_input_per_ton_total",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Prod_Budget_QuantityInputPerTonTotal"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

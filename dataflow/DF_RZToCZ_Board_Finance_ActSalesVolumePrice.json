@@ -1,0 +1,164 @@
+{
+	"name": "DF_RZToCZ_Board_Finance_ActSalesVolumePrice",
+	"properties": {
+		"folder": {
+			"name": "Finance/RawToConformed"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_ActSalesPriceDetailed",
+						"type": "DatasetReference"
+					},
+					"name": "SrcActSalesPriceDetailed"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_ActSalesVolumes",
+						"type": "DatasetReference"
+					},
+					"name": "SrcActSalesVolume"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_Synapse_Act_SalesVolumePrice",
+						"type": "DatasetReference"
+					},
+					"name": "SnkActSalesVolumePrice"
+				}
+			],
+			"transformations": [
+				{
+					"name": "joinActSalesPriceDetailedWithActSalesVolumes"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "aggregate1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Month as integer,",
+				"          Entity as short,",
+				"          Counterparty as string,",
+				"          {Trading/Own Produced} as string,",
+				"          {Volume Type} as string,",
+				"          {Other Revenue Details} as string,",
+				"          Product as string,",
+				"          {Price Component} as short,",
+				"          {ACT- Revenue Net Back Prices} as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:['Finance/Act_Sales_Price_Detail/*/ACT_SALES_PRICE_DETAILED.csv']) ~> SrcActSalesPriceDetailed",
+				"source(output(",
+				"          Month as integer,",
+				"          Entity as short,",
+				"          Counterparty as string,",
+				"          {Volume Type} as string,",
+				"          {Trading/Own Produced} as string,",
+				"          {Other Revenue Details} as string,",
+				"          Product as string,",
+				"          {ACT - Revenue Volumes} as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (addDays(currentUTC(), -1)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:['Finance/Act_Sales_Volume/*/ACT_SALES_VOLUMES.csv']) ~> SrcActSalesVolume",
+				"SrcActSalesPriceDetailed, SrcActSalesVolume join(SrcActSalesPriceDetailed@Month == SrcActSalesVolume@Month",
+				"     && SrcActSalesPriceDetailed@Entity == SrcActSalesVolume@Entity",
+				"     && SrcActSalesPriceDetailed@{Other Revenue Details} == SrcActSalesVolume@{Other Revenue Details}",
+				"     && SrcActSalesPriceDetailed@Product == SrcActSalesVolume@Product",
+				"     && SrcActSalesPriceDetailed@Counterparty == SrcActSalesVolume@Counterparty",
+				"     && SrcActSalesPriceDetailed@{Volume Type} == SrcActSalesVolume@{Volume Type}",
+				"     && SrcActSalesPriceDetailed@{Trading/Own Produced} == SrcActSalesVolume@{Trading/Own Produced},",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinActSalesPriceDetailedWithActSalesVolumes",
+				"joinActSalesPriceDetailedWithActSalesVolumes filter({Price Component} == 93) ~> filter1",
+				"filter1 derive({ACT- Revenue Net Back Prices} = case(isNull({ACT- Revenue Net Back Prices}), toDouble(0),{ACT- Revenue Net Back Prices}),",
+				"          {ACT - Revenue Volumes} = case(isNull({ACT - Revenue Volumes}), toDouble(0),{ACT - Revenue Volumes})) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          Month = SrcActSalesPriceDetailed@Month,",
+				"          Entity = SrcActSalesPriceDetailed@Entity,",
+				"          Counterparty = SrcActSalesPriceDetailed@Counterparty,",
+				"          {Trading/Own_Produced} = SrcActSalesPriceDetailed@{Trading/Own Produced},",
+				"          Volume_Type = SrcActSalesPriceDetailed@{Volume Type},",
+				"          Other_Revenue_Details = SrcActSalesPriceDetailed@{Other Revenue Details},",
+				"          Product = SrcActSalesPriceDetailed@Product,",
+				"          ACT_Revenue_Prices = {Price Component},",
+				"          ACT_Revenue_Net_Back_Prices = {ACT- Revenue Net Back Prices},",
+				"          ACT_Revenue_Volumes = {ACT - Revenue Volumes}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 aggregate(groupBy(Month,",
+				"          Entity,",
+				"          Counterparty,",
+				"          {Trading/Own_Produced},",
+				"          Volume_Type,",
+				"          Other_Revenue_Details,",
+				"          Product,",
+				"          ACT_Revenue_Prices,",
+				"          ACT_Revenue_Net_Back_Prices,",
+				"          ACT_Revenue_Volumes),",
+				"     Cnt = count(1)) ~> aggregate1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Month as integer,",
+				"          Entity as string,",
+				"          Product as string,",
+				"          Other_Revenue_Details as string,",
+				"          Counterparty as string,",
+				"          Volume_Type as string,",
+				"          {Trading/Own_Produced} as string,",
+				"          ACT_Revenue_Prices as decimal(38,20),",
+				"          ACT_Revenue_Net_Back_Prices as decimal(38,20),",
+				"          ACT_Revenue_Volumes as decimal(38,20)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Month,",
+				"          Entity,",
+				"          Product,",
+				"          Other_Revenue_Details,",
+				"          Counterparty,",
+				"          Volume_Type,",
+				"          {Trading/Own_Produced},",
+				"          ACT_Revenue_Prices,",
+				"          ACT_Revenue_Net_Back_Prices,",
+				"          ACT_Revenue_Volumes",
+				"     )) ~> SnkActSalesVolumePrice"
+			]
+		}
+	}
+}

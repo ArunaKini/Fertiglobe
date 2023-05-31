@@ -1,0 +1,127 @@
+{
+	"name": "DS_Snk_Synapse_Budget_Finance_Details_Consolidated",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "Month",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Revenue",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "Version",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RF",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Product",
+				"type": "varchar"
+			},
+			{
+				"name": "Gas_Cost",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "Variable_Cost",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "Adjusted_EBITDA",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "Account_Type_Description",
+				"type": "varchar"
+			},
+			{
+				"name": "Adjusted_net_income_share",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "SG_A",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "MR_Account",
+				"type": "varchar"
+			},
+			{
+				"name": "Fixed_Cost",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "MR_Account_Description",
+				"type": "varchar"
+			},
+			{
+				"name": "Statuary_Account_Description",
+				"type": "varchar"
+			},
+			{
+				"name": "Entity",
+				"type": "varchar"
+			},
+			{
+				"name": "Entity_Description",
+				"type": "varchar"
+			},
+			{
+				"name": "OCINVT_IFRS",
+				"type": "varchar"
+			},
+			{
+				"name": "Plan_Year",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Account",
+				"type": "varchar"
+			},
+			{
+				"name": "Account_Description",
+				"type": "varchar"
+			},
+			{
+				"name": "Layer",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Budget_Finance_Details_Consolidated"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

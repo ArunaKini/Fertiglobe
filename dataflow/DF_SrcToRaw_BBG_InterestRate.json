@@ -1,0 +1,77 @@
+{
+	"name": "DF_SrcToRaw_BBG_InterestRate",
+	"properties": {
+		"folder": {
+			"name": "Finance/StageToRaw"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_ADLSStaging_BBG_Instruments",
+						"type": "DatasetReference"
+					},
+					"name": "stagingZone",
+					"description": "Import data from DS_ADLSStaging_BBG_Interest Rate"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_ADLSRaw_BBG_Instruments_Folder",
+						"type": "DatasetReference"
+					},
+					"name": "rawZone",
+					"description": "Export data to DS_ADLSRaw_BBG_InterestRate"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          DL_REQUEST_ID as string,",
+				"          DL_REQUEST_NAME as string,",
+				"          DL_SNAPSHOT_START_TIME as string,",
+				"          DL_SNAPSHOT_TZ as string,",
+				"          IDENTIFIER as string,",
+				"          RC as string,",
+				"          PX_CLOSE_1D as string,",
+				"          HIGH_52WEEK as string,",
+				"          LOW_52WEEK as string,",
+				"          PX_CLOSE_DT as string,",
+				"          LAST_UPDATE_DATE_EOD as string,",
+				"          PX_LAST_EOD as string,",
+				"          EQY_INIT_PO_SH_PX as string,",
+				"          PX_SETTLE_LAST_DT as string,",
+				"          PX_SETTLE as string,",
+				"          FAIR_VALUE as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     modifiedAfter: (minus(currentTimestamp(), -5)),",
+				"     modifiedBefore: (currentUTC()),",
+				"     wildcardPaths:[(concat('Bloomberg/InterestRate/', toString(currentUTC(),'yyyy-MM-dd'),'/BBGInterestRate.csv'))]) ~> stagingZone",
+				"stagingZone sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          IDENTIFIER as string,",
+				"          PX_CLOSE_1D as string,",
+				"          HIGH_52WEEK as string,",
+				"          LOW_52WEEK as string,",
+				"          PX_CLOSE_DT as string,",
+				"          LAST_UPDATE_DATE_EOD as string,",
+				"          PX_LAST_EOD as string,",
+				"          EQY_INIT_PO_SH_PX as string",
+				"     ),",
+				"     partitionFileNames:['Consolidated_Cash.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> rawZone"
+			]
+		}
+	}
+}

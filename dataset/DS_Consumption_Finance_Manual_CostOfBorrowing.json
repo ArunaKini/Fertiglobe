@@ -1,0 +1,53 @@
+{
+	"name": "DS_Consumption_Finance_Manual_CostOfBorrowing",
+	"properties": {
+		"annotations": [],
+		"type": "SqlPoolTable",
+		"schema": [
+			{
+				"name": "ValueDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "SOFR_TSFR1M",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Column_3_YTY_USGG3YR",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 3
+			},
+			{
+				"name": "Column_5_YTY_USGG5YR",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 3
+			},
+			{
+				"name": "Column_7_YTY_USGG7YR",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 3
+			},
+			{
+				"name": "CoB",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "consumption",
+			"table": "Cost_of_Borrowing"
+		},
+		"sqlPool": {
+			"referenceName": "synwsdb01",
+			"type": "SqlPoolReference"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

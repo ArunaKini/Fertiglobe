@@ -1,0 +1,69 @@
+{
+	"name": "DF_RZToCZ_Executive_Manual_WANetbackBenchmarkPrices",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Src_RawZone_WANetbackBenchmarkPrices",
+						"type": "DatasetReference"
+					},
+					"name": "SrcRawZoneWANetbackBenchmarkPrices"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Snk_WA_Netback_Benchmark_Prices",
+						"type": "DatasetReference"
+					},
+					"name": "TrgConformedZoneWANetbackBenchmarkPrices"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          Month as string,",
+				"          Year as short,",
+				"          {Product } as string,",
+				"          ValueType as string,",
+				"          {WA Netbacks} as double,",
+				"          Benchmark as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SrcRawZoneWANetbackBenchmarkPrices",
+				"SrcRawZoneWANetbackBenchmarkPrices sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Month as string,",
+				"          Year as integer,",
+				"          Product as string,",
+				"          ValueType as string,",
+				"          WANetbacks as integer,",
+				"          Benchmark as integer",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          Month,",
+				"          Year,",
+				"          Product = {Product },",
+				"          ValueType,",
+				"          WANetbacks = {WA Netbacks},",
+				"          Benchmark",
+				"     )) ~> TrgConformedZoneWANetbackBenchmarkPrices"
+			]
+		}
+	}
+}

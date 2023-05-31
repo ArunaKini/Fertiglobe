@@ -1,0 +1,30 @@
+{
+	"name": "TRG_SrcToRaw_Finance_IT2",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PL_SrcToRaw_IT2_Finance_ConsolidatedCash",
+					"type": "PipelineReference"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "PL_SrcToRaw_IT2_Finance_NetDebtConsolidated",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/ferti-dl-landing-dev/blobs/Finance/IT2/",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/7133dcb0-ac3b-441f-84f4-a8229f4a87e0/resourceGroups/rg-dlk-dev-001/providers/Microsoft.Storage/storageAccounts/stdlkdevuaenorth001",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

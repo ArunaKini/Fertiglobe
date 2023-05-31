@@ -1,0 +1,55 @@
+{
+	"name": "DF_SrcToRZ_Manual_Finance_CategorisedFreeCashFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_LandingZone_Finance_Manual_CategorisedFreeCashFlow",
+						"type": "DatasetReference"
+					},
+					"name": "RawSrcCategorisedFreeCashFlow"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_ADLSRawZone",
+						"type": "DatasetReference"
+					},
+					"name": "RawLoadingCategorisedFreeCashFlow"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          Year as string,",
+				"          Quarter as string,",
+				"          ValueType as string,",
+				"          Free_Cash_Flow as string,",
+				"          Opco as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> RawSrcCategorisedFreeCashFlow",
+				"RawSrcCategorisedFreeCashFlow sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['CategorisedFreeCashFlow.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          Year,",
+				"          Quarter,",
+				"          ValueType,",
+				"          Free_Cash_Flow,",
+				"          Opco",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> RawLoadingCategorisedFreeCashFlow"
+			]
+		}
+	}
+}

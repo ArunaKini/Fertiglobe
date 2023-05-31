@@ -1,0 +1,65 @@
+{
+	"name": "DS_LandingZone_Finance_Manual_PLR",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSRawZone",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "FGH-DAILY-LOSS-REPORT - Copy.xlsx",
+				"folderPath": "Finance/ManualExtracts",
+				"fileSystem": "ferti-dl-landing-dev"
+			},
+			"sheetIndex": 0,
+			"range": "A2",
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Year",
+				"type": "String"
+			},
+			{
+				"name": "Quarter",
+				"type": "String"
+			},
+			{
+				"name": "Month",
+				"type": "String"
+			},
+			{
+				"name": "Company",
+				"type": "String"
+			},
+			{
+				"name": "ValueType",
+				"type": "String"
+			},
+			{
+				"name": "Available_Cash",
+				"type": "String"
+			},
+			{
+				"name": "Net_Debt",
+				"type": "String"
+			},
+			{
+				"name": "Short_Term_Debt",
+				"type": "String"
+			},
+			{
+				"name": "Long_Term_Debt",
+				"type": "String"
+			},
+			{
+				"name": "Deferred_Costs",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

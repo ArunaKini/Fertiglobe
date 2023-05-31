@@ -1,0 +1,83 @@
+{
+	"name": "DF_LZToRaw_Manual_Production_EHS",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_LandingZone_Production_Manual_EHS",
+						"type": "DatasetReference"
+					},
+					"name": "SourceLandingEHS"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_RawZone_Production_Manual_EHS",
+						"type": "DatasetReference"
+					},
+					"name": "SnkRawEHS"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          OpCo as string,",
+				"          KPIDate as string,",
+				"          ValueType as string,",
+				"          Site as string,",
+				"          Fatalities as string,",
+				"          Restricted_work_cases as string,",
+				"          Medical_Treatment as string,",
+				"          Lost_time_injuries as string,",
+				"          TRIR as string,",
+				"          LTIR as string,",
+				"          PSI as string,",
+				"          PSIR as string,",
+				"          EI as string,",
+				"          EIR as string,",
+				"          {Scope 1} as string,",
+				"          {Scope 2} as string,",
+				"          {Scope 3} as string,",
+				"          Offset as string,",
+				"          GHG_Reduction as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SourceLandingEHS",
+				"SourceLandingEHS sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['EHS_Template.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          OpCo,",
+				"          KPIDate,",
+				"          ValueType,",
+				"          Site,",
+				"          Fatalities,",
+				"          Restricted_work_cases,",
+				"          Medical_Treatment,",
+				"          Lost_time_injuries,",
+				"          TRIR,",
+				"          LTIR,",
+				"          PSI,",
+				"          PSIR,",
+				"          EI,",
+				"          EIR,",
+				"          {Scope 1},",
+				"          {Scope 2},",
+				"          {Scope 3},",
+				"          Offset,",
+				"          GHG_Reduction",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> SnkRawEHS"
+			]
+		}
+	}
+}

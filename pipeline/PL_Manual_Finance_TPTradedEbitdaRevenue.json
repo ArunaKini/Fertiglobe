@@ -1,0 +1,44 @@
+{
+	"name": "PL_Manual_Finance_TPTradedEbitdaRevenue",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_SrcToRZ_Manual_Finance_TP_Traded_Revenue_Ebitda",
+						"type": "DataFlowReference"
+					},
+					"staging": {
+						"linkedService": {
+							"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultStorage",
+							"type": "LinkedServiceReference"
+						},
+						"folderPath": "ferti-dl-raw-dev/SynapseInternal"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Finance/ManualExtracts"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-25T10:59:37Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

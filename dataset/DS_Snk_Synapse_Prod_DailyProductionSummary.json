@@ -1,0 +1,111 @@
+{
+	"name": "DS_Snk_Synapse_Prod_DailyProductionSummary",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "PRODUCTIONDATE",
+				"type": "date"
+			},
+			{
+				"name": "OpCo",
+				"type": "varchar"
+			},
+			{
+				"name": "PLANT_NAME",
+				"type": "varchar"
+			},
+			{
+				"name": "STATUS",
+				"type": "varchar"
+			},
+			{
+				"name": "STATUSDATE",
+				"type": "date"
+			},
+			{
+				"name": "REMARKS",
+				"type": "varchar"
+			},
+			{
+				"name": "PRODUCTION",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "PROD_MTD",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "BUDGET_MONTHLY",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "ACTUAL_MONTHLY_BUDGET",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "ENERGYEFFICIENCY",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "DOWNTIME",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "ONSTREAMFACTOR",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "CAPACITYEFFRATE",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "ASSETUTILRATE",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "CONTINUOUS_OPERATING_DAYS",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			},
+			{
+				"name": "ONSTREAM_DAYS",
+				"type": "decimal",
+				"precision": 25,
+				"scale": 8
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Prod_Daily_Production_Summary"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

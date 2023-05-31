@@ -1,0 +1,39 @@
+{
+	"name": "DS_LandingZone_Production_Mxm_EBIC_File_Ph2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLSRawZone",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"FileName": {
+				"type": "string",
+				"defaultValue": "Fertil_Daily_Production_Report_18May2023_1207PM.xlsx"
+			},
+			"DS_SourceFolder": {
+				"type": "string",
+				"defaultValue": "Production/Maximo/Fertil/2023-05-18"
+			}
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet0",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().FileName",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().DS_SourceFolder",
+					"type": "Expression"
+				},
+				"fileSystem": "ferti-dl-landing-dev"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

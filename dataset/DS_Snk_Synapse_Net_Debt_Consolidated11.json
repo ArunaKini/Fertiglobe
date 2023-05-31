@@ -1,0 +1,73 @@
+{
+	"name": "DS_Snk_Synapse_Net_Debt_Consolidated11",
+	"properties": {
+		"annotations": [],
+		"type": "SqlPoolTable",
+		"schema": [
+			{
+				"name": "KPIDate",
+				"type": "date"
+			},
+			{
+				"name": "Month",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Company",
+				"type": "varchar"
+			},
+			{
+				"name": "Nebt_Debt_Group",
+				"type": "varchar"
+			},
+			{
+				"name": "Nebt_Debt_Category",
+				"type": "varchar"
+			},
+			{
+				"name": "TranType",
+				"type": "varchar"
+			},
+			{
+				"name": "Total_Net_Debt_USD",
+				"type": "decimal",
+				"precision": 17,
+				"scale": 2
+			},
+			{
+				"name": "Cash",
+				"type": "decimal",
+				"precision": 17,
+				"scale": 2
+			},
+			{
+				"name": "Deferred_Costs",
+				"type": "decimal",
+				"precision": 17,
+				"scale": 2
+			},
+			{
+				"name": "Short_Term_Debt",
+				"type": "decimal",
+				"precision": 17,
+				"scale": 2
+			},
+			{
+				"name": "Long_Term_Debt",
+				"type": "decimal",
+				"precision": 17,
+				"scale": 2
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Net_Debt_Consolidated"
+		},
+		"sqlPool": {
+			"referenceName": "synwsdb01",
+			"type": "SqlPoolReference"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

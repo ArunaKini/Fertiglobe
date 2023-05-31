@@ -1,0 +1,83 @@
+{
+	"name": "DS_Snk_Synapse_Fct_SalesVolumesPrice",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "Month",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Entity",
+				"type": "varchar"
+			},
+			{
+				"name": "Product",
+				"type": "varchar"
+			},
+			{
+				"name": "Other_Revenue_Details",
+				"type": "varchar"
+			},
+			{
+				"name": "Plan_Year",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Scenario",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Version",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Counterparty",
+				"type": "varchar"
+			},
+			{
+				"name": "Volume_Type",
+				"type": "varchar"
+			},
+			{
+				"name": "Trading/Own_Produced",
+				"type": "varchar"
+			},
+			{
+				"name": "Fct_Revenue_Prices",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 20
+			},
+			{
+				"name": "Fct_Revenue_Net_Back_Prices",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 20
+			},
+			{
+				"name": "Fct_Revenue_Volumes",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 20
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Fct_Sales_Volume_Price"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

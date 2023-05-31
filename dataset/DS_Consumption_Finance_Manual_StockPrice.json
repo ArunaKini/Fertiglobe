@@ -1,0 +1,34 @@
+{
+	"name": "DS_Consumption_Finance_Manual_StockPrice",
+	"properties": {
+		"annotations": [],
+		"type": "SqlPoolTable",
+		"schema": [
+			{
+				"name": "Company",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ValueDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "Stock_Value",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 16
+			}
+		],
+		"typeProperties": {
+			"schema": "consumption",
+			"table": "Stock_Price"
+		},
+		"sqlPool": {
+			"referenceName": "synwsdb01",
+			"type": "SqlPoolReference"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

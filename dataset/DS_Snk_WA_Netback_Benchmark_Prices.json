@@ -1,0 +1,48 @@
+{
+	"name": "DS_Snk_WA_Netback_Benchmark_Prices",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "Month",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Year",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Product",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ValueType",
+				"type": "nvarchar"
+			},
+			{
+				"name": "WANetbacks",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Benchmark",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Exec_WA_Netback_Benchmark_Prices"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

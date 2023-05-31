@@ -1,0 +1,56 @@
+{
+	"name": "DF_SrcToRZ_Manual_Finance_FctNetDebtEBITDA",
+	"properties": {
+		"folder": {
+			"name": "Finance/StageToRaw"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_LandingZone_Finance_Manual_FctNetDebtEBITDA",
+						"type": "DatasetReference"
+					},
+					"name": "SrcFctNetDebt"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_ADLSRawZone",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          Year as string,",
+				"          Quarter as string,",
+				"          Value_Type as string,",
+				"          Net_Debt_EBITDA as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SrcFctNetDebt",
+				"SrcFctNetDebt sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['Fct_NetDebt.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          Year,",
+				"          Quarter,",
+				"          Value_Type,",
+				"          Net_Debt_EBITDA",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}

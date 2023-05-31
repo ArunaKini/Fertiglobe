@@ -1,0 +1,56 @@
+{
+	"name": "DS_Snk_Synapse_Act_Capex_Details",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-ws-dlk-dev-01-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "synwsdb01"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "Month",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Entity",
+				"type": "varchar"
+			},
+			{
+				"name": "Entity_Description",
+				"type": "varchar"
+			},
+			{
+				"name": "Project_Type",
+				"type": "varchar"
+			},
+			{
+				"name": "Project_Type_Description",
+				"type": "varchar"
+			},
+			{
+				"name": "Project_SubType",
+				"type": "varchar"
+			},
+			{
+				"name": "Project_SubType_Description",
+				"type": "varchar"
+			},
+			{
+				"name": "Act_Capex_Cash",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "conformed",
+			"table": "Act_Capex_Details"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
